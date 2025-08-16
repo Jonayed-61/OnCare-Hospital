@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { FaPhoneAlt, FaMapMarkerAlt, FaWhatsapp, FaArrowDown, FaUserMd, FaClinicMedical, FaBriefcase, FaBlog, FaEnvelope, FaFlask, FaAmbulance, FaPills, FaNotesMedical } from 'react-icons/fa';
 import '../Styles/home.css';
 import logo from '../Assets/logo.png';
+import { Link } from 'react-router-dom';
 import Doctors from '../Assets/doctors.png';
 
 export default function HomePage() {
@@ -118,34 +119,39 @@ export default function HomePage() {
       {/* Navbar with animated underline */}
       <nav className="navbar nav-animation bg-white shadow-lg">
         <div className="nav container mx-auto flex justify-center py-4 space-x-6 md:space-x-10 text-blue-700 font-medium">
-          <a href="#" className="nav-link flex items-center group">
+          <Link to="/" className="nav-link flex items-center group">
             <FaUserMd className="mr-2 group-hover:text-blue-600 transition-colors" />
             Home
-          </a>
-          <a href="#" className="nav-link flex items-center group">
+          </Link>
+          <Link to="/about" className="nav-link flex items-center group">
             <FaClinicMedical className="mr-2 group-hover:text-blue-600 transition-colors" />
             About Us
-          </a>
-          <a href="#" className="nav-link flex items-center group">
+          </Link>
+          <Link to="/services" className="nav-link flex items-center group">
             <FaUserMd className="mr-2 group-hover:text-blue-600 transition-colors" />
             Services
-          </a>
-          <a href="#" className="nav-link flex items-center group">
+          </Link>
+          <Link to="/doctors" className="nav-link flex items-center group">
+            <FaUserMd className="mr-2 group-hover:text-blue-600 transition-colors" />
+            Doctors
+          </Link>
+          <Link to="/partners" className="nav-link flex items-center group">
             <FaClinicMedical className="mr-2 group-hover:text-blue-600 transition-colors" />
             Partners
-          </a>
-          <a href="#" className="nav-link flex items-center group">
+          </Link>
+          <Link to="/careers" className="nav-link flex items-center group">
             <FaBriefcase className="mr-2 group-hover:text-blue-600 transition-colors" />
             Careers
-          </a>
-          <a href="#" className="nav-link flex items-center group">
+          </Link>
+          <Link to="/blog" className="nav-link flex items-center group">
             <FaBlog className="mr-2 group-hover:text-blue-600 transition-colors" />
             Blog
-          </a>
-          <a href="#" className="nav-link flex items-center group">
+          </Link>
+          <Link to="/contact" className="nav-link flex items-center group">
             <FaEnvelope className="mr-2 group-hover:text-blue-600 transition-colors" />
             Contact
-          </a>
+          </Link>
+          
         </div>
       </nav>
 
@@ -228,49 +234,49 @@ export default function HomePage() {
       </section>
 
       <footer class="footer footer-animation bg-white pt-12 pb-6">
-  <div class="container mx-auto px-6">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-      <div>
-        <img src={logo} alt="Logo" class="footer-logo h-12 mb-4" />
-        <p class="text-gray-600">Your health is our priority</p>
-      </div>
-      <div>
-        <h3 class="text-lg font-semibold mb-4 text-blue-700">Links</h3>
-        <ul class="space-y-2">
-          <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Home</a></li>
-          <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Services</a></li>
-          <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Doctors</a></li>
-          <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Pricing</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3 class="text-lg font-semibold mb-4 text-blue-700">Contact</h3>
-        <address class="text-gray-600 not-italic">
-          <p class="mb-2">Talaimari, Mohanpur</p>
-          <p class="mb-2">Rajshahi, Bangladesh</p>
-          <p class="mb-2">+8809611911666</p>
-          <p>info@medisheba.com</p>
-        </address>
-      </div>
-      <div>
-        <h3 class="text-lg font-semibold mb-4 text-blue-700">Newsletter</h3>
-        <div class="flex">
-          <input
-            type="email"
-            placeholder="Your Email"
-            class="px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-          />
-          <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg transition-colors">
-            Subscribe
-          </button>
+        <div class="container mx-auto px-6">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <img src={logo} alt="Logo" class="footer-logo h-12 mb-4" />
+              <p class="text-gray-600">Your health is our priority</p>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-blue-700">Links</h3>
+              <ul class="space-y-2">
+                <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Home</a></li>
+                <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Services</a></li>
+                <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Doctors</a></li>
+                <li><a href="#" class="text-gray-600 hover:text-blue-600 transition-colors">Pricing</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-blue-700">Contact</h3>
+              <address class="text-gray-600 not-italic">
+                <p class="mb-2">Talaimari, Mohanpur</p>
+                <p class="mb-2">Rajshahi, Bangladesh</p>
+                <p class="mb-2">+8809611911666</p>
+                <p>info@medisheba.com</p>
+              </address>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold mb-4 text-blue-700">Newsletter</h3>
+              <div class="flex">
+                <input
+                  type="email"
+                  placeholder="Your Email"
+                  class="px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
+                />
+                <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg transition-colors">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="border-t border-gray-200 pt-6 text-center text-gray-500">
+            <p>© 2023 Medi Sheba. All rights reserved</p>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="border-t border-gray-200 pt-6 text-center text-gray-500">
-      <p>© 2023 Medi Sheba. All rights reserved</p>
-    </div>
-  </div>
-</footer>
+      </footer>
       {/* Floating action buttons */}
       <div className="floating-btn floating-phone" data-tooltip="Call Us">
         <FaPhoneAlt className="text-white text-xl" />
