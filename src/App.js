@@ -3,7 +3,7 @@ import HomePage from './Pages/home';
 import AboutPage from './Pages/about';
 import DoctorsPage from './Pages/doctors';
 import CareersPage from './Pages/careers';
-import BlogPage from './Pages/blog';
+//import BlogPage from './Pages/blog';
 
 
 
@@ -25,10 +25,10 @@ const router = createBrowserRouter([
     path: "/careers",
     element: <CareersPage />,
   },
-  {
-    path: "/blog",
-    element: <BlogPage />,
-  },
+  // {
+  //   path: "/blog",
+  //   element: <BlogPage />,
+  // },
 ]);
 
 function App() {

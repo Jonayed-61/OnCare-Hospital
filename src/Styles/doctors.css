@@ -1,237 +1,319 @@
-/* doctors.css - Enhanced with Professional Animations */
+/* Doctors Page Styles */
 .doctors-page {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
     position: relative;
     overflow-x: hidden;
 }
 
-/* Animated Decorative Circles */
-.doctors-decorative-circle {
-    position: absolute;
-    border-radius: 50%;
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
-    z-index: 0;
-    animation: float 6s ease-in-out infinite;
+/* Animated Background Elements */
+.doctors-animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
 }
 
-.doctors-circle-1 {
+.doctors-bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+    animation: float 15s infinite ease-in-out;
+}
+
+.doctors-bubble-1 {
     width: 300px;
     height: 300px;
     top: 10%;
-    left: -150px;
+    left: 5%;
     animation-delay: 0s;
 }
 
-.doctors-circle-2 {
+.doctors-bubble-2 {
     width: 200px;
     height: 200px;
-    top: 40%;
-    right: -100px;
-    animation-delay: 2s;
+    top: 60%;
+    right: 5%;
+    animation-delay: -5s;
+}
+
+.doctors-bubble-3 {
+    width: 250px;
+    height: 250px;
+    bottom: 10%;
+    left: 15%;
+    animation-delay: -10s;
+}
+
+.doctors-bubble-4 {
+    width: 150px;
+    height: 150px;
+    top: 20%;
+    right: 15%;
+    animation-delay: -7s;
+}
+
+/* Decorative Circles */
+.doctors-decorative-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(59, 130, 246, 0.15);
+    z-index: -1;
+}
+
+.doctors-circle-1 {
+    width: 500px;
+    height: 500px;
+    top: -250px;
+    right: -250px;
+}
+
+.doctors-circle-2 {
+    width: 300px;
+    height: 300px;
+    bottom: 100px;
+    left: -150px;
 }
 
 .doctors-circle-3 {
-    width: 150px;
-    height: 150px;
-    bottom: 20%;
-    left: 10%;
-    animation-delay: 4s;
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0) scale(1);
-    }
-    50% {
-        transform: translateY(-20px) scale(1.05);
-    }
+    width: 400px;
+    height: 400px;
+    bottom: -200px;
+    right: -200px;
 }
 
 /* Container */
 .doctors-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1.5rem;
-    position: relative;
-    z-index: 10;
+    padding: 0 20px;
 }
 
-/* Hero Section with Enhanced Animation */
+/* Hero Section */
 .doctors-hero-section {
-    padding: 8rem 0;
-    text-align: center;
-    color: white;
     position: relative;
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.8) 0%, rgba(16, 185, 129, 0.8) 100%);
+    padding: 120px 0 100px;
+    color: white;
+    text-align: center;
     overflow: hidden;
-}
-
-.doctors-hero-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
-    background-size: cover;
-    animation: gradientShift 15s ease infinite;
-}
-
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
 }
 
 .doctors-hero-content {
     max-width: 800px;
     margin: 0 auto;
-    animation: fadeInUp 1s ease-out;
+    position: relative;
+    z-index: 2;
 }
 
 .doctors-hero-title {
     font-size: 3.5rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    position: relative;
-    display: inline-block;
-}
-
-.doctors-hero-title::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100px;
-    height: 4px;
-    background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
-    border-radius: 2px;
-    animation: expandLine 1.2s ease-out forwards;
-}
-
-@keyframes expandLine {
-    0% { width: 0; }
-    100% { width: 100px; }
+    line-height: 1.2;
 }
 
 .doctors-gradient-text {
-    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    position: relative;
 }
 
 .doctors-hero-subtitle {
     font-size: 1.25rem;
+    margin-bottom: 2.5rem;
     opacity: 0.9;
-    margin-bottom: 2rem;
-    animation: fadeInUp 1s ease-out 0.3s both;
+    line-height: 1.6;
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.doctors-hero-cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Buttons */
+.doctors-primary-btn, .doctors-secondary-btn {
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.doctors-primary-btn {
+    background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.doctors-primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.doctors-secondary-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.doctors-secondary-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Scroll Indicator */
+.doctors-scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+}
+
+.doctors-scroll-indicator:hover {
+    opacity: 1;
+}
+
+.doctors-scroll-line {
+    margin-top: 10px;
+    animation: bounce 2s infinite;
+}
+
+/* Stats Section */
+.doctors-stats-section {
+    padding: 80px 0;
+    background: white;
+}
+
+.doctors-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.doctors-stat-card {
+    text-align: center;
+    padding: 2rem 1rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.doctors-stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.doctors-stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1E40AF;
+    margin-bottom: 0.5rem;
+}
+
+.doctors-stat-label {
+    font-size: 1rem;
+    color: #64748B;
 }
 
 /* Filter Section */
 .doctors-filter-section {
-    padding: 3rem 0;
-    background: white;
-    animation: fadeIn 1s ease-out;
+    padding: 80px 0;
+    background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
 }
 
 .doctors-filter-content {
-    max-width: 1000px;
+    max-width: 900px;
     margin: 0 auto;
+    text-align: center;
 }
 
 .doctors-filter-title {
-    font-size: 2rem;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 2rem;
-    color: #2d3748;
-    position: relative;
-    display: inline-block;
-    left: 50%;
-    transform: translateX(-50%);
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1E293B;
+    margin-bottom: 1rem;
 }
 
-.doctors-filter-title::after {
-    content: '';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background: #4f46e5;
-    border-radius: 2px;
+.doctors-filter-subtitle {
+    font-size: 1.125rem;
+    color: #64748B;
+    margin-bottom: 3rem;
 }
 
 .doctors-search-box {
-    margin-bottom: 2rem;
-    animation: fadeIn 0.8s ease-out 0.2s both;
+    margin-bottom: 2.5rem;
 }
 
 .doctors-search-input {
     position: relative;
     max-width: 600px;
     margin: 0 auto;
-    transition: all 0.3s ease;
 }
 
 .doctors-search-input input {
     width: 100%;
-    padding: 1rem 1.5rem 1rem 3rem;
-    border: 1px solid #e2e8f0;
+    padding: 16px 20px 16px 50px;
     border-radius: 50px;
+    border: 1px solid #E2E8F0;
+    background: white;
     font-size: 1rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
 }
 
 .doctors-search-input input:focus {
     outline: none;
-    border-color: #4f46e5;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
-    transform: translateY(-2px);
+    border-color: #3B82F6;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.15);
 }
 
 .doctors-search-icon {
     position: absolute;
-    left: 1.2rem;
+    left: 20px;
     top: 50%;
     transform: translateY(-50%);
-    color: #a0aec0;
-    transition: color 0.3s ease;
-}
-
-.doctors-search-input input:focus + .doctors-search-icon {
-    color: #4f46e5;
+    color: #64748B;
 }
 
 .doctors-specialty-filters {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    animation: fadeIn 0.8s ease-out 0.4s both;
+    text-align: center;
 }
 
 .doctors-filter-label {
     display: flex;
     align-items: center;
-    margin-bottom: 1rem;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
     font-weight: 600;
-    color: #4a5568;
+    color: #1E293B;
+}
+
+.doctors-filter-icon {
+    color: #3B82F6;
 }
 
 .doctors-specialty-buttons {
@@ -242,128 +324,70 @@
 }
 
 .doctors-specialty-btn {
-    padding: 0.5rem 1.25rem;
-    background: #f7fafc;
-    border: 1px solid #e2e8f0;
+    padding: 8px 20px;
     border-radius: 50px;
-    font-size: 0.9rem;
-    cursor: pointer;
+    border: 1px solid #E2E8F0;
+    background: white;
+    color: #64748B;
+    font-weight: 500;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.doctors-specialty-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(79, 70, 229, 0.1), transparent);
-    transition: left 0.5s ease;
-}
-
-.doctors-specialty-btn:hover::before {
-    left: 100%;
+    cursor: pointer;
 }
 
 .doctors-specialty-btn:hover {
-    background: #edf2f7;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: #3B82F6;
+    color: #3B82F6;
 }
 
 .doctors-specialty-btn.active {
-    background: #4f46e5;
+    background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
     color: white;
-    border-color: #4f46e5;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+    border-color: transparent;
+    box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
 }
 
 /* Doctors Listing */
 .doctors-listing-section {
-    padding: 4rem 0;
-    animation: fadeIn 1s ease-out;
+    padding: 80px 0;
+    background: white;
 }
 
 .doctors-listing-title {
     font-size: 2.25rem;
     font-weight: 700;
-    text-align: center;
+    color: #1E293B;
     margin-bottom: 3rem;
-    color: #2d3748;
-    position: relative;
-}
-
-.doctors-listing-title::after {
-    content: '';
-    position: absolute;
-    bottom: -15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background: #4f46e5;
-    border-radius: 2px;
+    text-align: center;
 }
 
 .doctors-count {
-    color: #4f46e5;
-    position: relative;
-    display: inline-block;
-}
-
-.doctors-count::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, #4f46e5, transparent);
-    border-radius: 1px;
+    color: #3B82F6;
 }
 
 .doctors-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 2rem;
-    margin-bottom: 3rem;
 }
 
+/* Doctor Card */
 .doctors-card {
     background: white;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
-    transition: all 0.3s ease;
-    opacity: 0;
-    animation: cardAppear 0.6s ease-out forwards;
-}
-
-.doctors-card:nth-child(1) { animation-delay: 0.1s; }
-.doctors-card:nth-child(2) { animation-delay: 0.2s; }
-.doctors-card:nth-child(3) { animation-delay: 0.3s; }
-.doctors-card:nth-child(4) { animation-delay: 0.4s; }
-.doctors-card:nth-child(5) { animation-delay: 0.5s; }
-.doctors-card:nth-child(6) { animation-delay: 0.6s; }
-
-@keyframes cardAppear {
-    from {
-        opacity: 0;
-        transform: translateY(30px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s ease;
+    position: relative;
 }
 
 .doctors-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.doctors-card.expanded {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
 }
 
 .doctors-card-image {
@@ -376,128 +400,124 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: all 0.5s ease;
+    transition: transform 0.5s ease;
 }
 
 .doctors-card:hover .doctors-card-image img {
-    transform: scale(1.1);
+    transform: scale(1.05);
+}
+
+.doctors-image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
 }
 
 .doctors-availability {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    padding: 0.35rem 0.75rem;
+    top: 15px;
+    right: 15px;
+    padding: 6px 12px;
     border-radius: 50px;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    animation: pulse 2s infinite;
+    z-index: 2;
 }
 
 .doctors-availability.available {
-    background: #c6f6d5;
-    color: #22543d;
+    background: #10B981;
+    color: white;
 }
 
 .doctors-availability.not-available {
-    background: #fed7d7;
-    color: #742a2a;
-}
-
-@keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(198, 246, 213, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(198, 246, 213, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(198, 246, 213, 0); }
+    background: #EF4444;
+    color: white;
 }
 
 .doctors-card-content {
     padding: 1.5rem;
 }
 
+.doctors-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
 .doctors-card-name {
     font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
-    color: #2d3748;
-    position: relative;
-    display: inline-block;
+    color: #1E293B;
+    margin: 0;
 }
 
-.doctors-card-name::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: #4f46e5;
-    transition: width 0.3s ease;
+.doctors-card-toggle {
+    background: #F1F5F9;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.doctors-card:hover .doctors-card-name::after {
-    width: 100%;
+.doctors-card-toggle:hover {
+    background: #E2E8F0;
+}
+
+.doctors-toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.doctors-toggle-icon.expanded {
+    transform: rotate(90deg);
 }
 
 .doctors-card-specialty {
-    color: #4f46e5;
+    color: #3B82F6;
     font-weight: 600;
     margin-bottom: 1rem;
-    display: inline-block;
-    position: relative;
-}
-
-.doctors-card-specialty::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -5px;
-    width: 0;
-    height: 1px;
-    background: #4f46e5;
-    transition: width 0.3s ease;
-}
-
-.doctors-card:hover .doctors-card-specialty::before {
-    width: 100%;
 }
 
 .doctors-card-rating {
     display: flex;
     align-items: center;
+    gap: 0.75rem;
     margin-bottom: 1.25rem;
 }
 
 .doctors-stars {
     display: flex;
-    margin-right: 0.5rem;
+    gap: 2px;
 }
 
 .star-filled {
-    color: #fbbf24;
-    margin-right: 0.2rem;
-    animation: starPulse 1s ease-in-out;
+    color: #F59E0B;
 }
 
 .star-empty {
-    color: #e2e8f0;
-    margin-right: 0.2rem;
+    color: #E2E8F0;
 }
 
-@keyframes starPulse {
-    0% { transform: scale(0.5); opacity: 0; }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); opacity: 1; }
+.doctors-rating-text {
+    font-size: 0.875rem;
 }
 
 .doctors-rating-value {
-    font-weight: 600;
-    margin-right: 0.5rem;
-    color: #4a5568;
+    font-weight: 700;
+    color: #1E293B;
+    margin-right: 0.25rem;
 }
 
 .doctors-reviews {
-    color: #718096;
-    font-size: 0.9rem;
+    color: #64748B;
 }
 
 .doctors-card-details {
@@ -507,23 +527,96 @@
 .doctors-detail-item {
     display: flex;
     align-items: center;
+    gap: 0.75rem;
     margin-bottom: 0.75rem;
-    color: #4a5568;
-    transition: transform 0.3s ease;
-}
-
-.doctors-detail-item:hover {
-    transform: translateX(5px);
+    font-size: 0.875rem;
+    color: #64748B;
 }
 
 .doctors-detail-icon {
-    margin-right: 0.75rem;
-    color: #4f46e5;
-    transition: transform 0.3s ease;
+    color: #3B82F6;
+    width: 14px;
 }
 
-.doctors-detail-item:hover .doctors-detail-icon {
-    transform: scale(1.2);
+/* Expanded Content */
+.doctors-card-expanded {
+    border-top: 1px solid #E2E8F0;
+    padding-top: 1.5rem;
+    margin-top: 1rem;
+    animation: slideDown 0.5s ease forwards;
+}
+
+.doctors-about, .doctors-services, .doctors-achievements {
+    margin-bottom: 1.5rem;
+}
+
+.doctors-card-expanded h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1E293B;
+    margin-bottom: 0.75rem;
+}
+
+.doctors-card-expanded p {
+    color: #64748B;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.doctors-services-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.doctors-service-tag {
+    background: #F1F5F9;
+    color: #475569;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.doctors-additional-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.doctors-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: #64748B;
+}
+
+.doctors-info-icon {
+    color: #3B82F6;
+    width: 14px;
+}
+
+.doctors-achievements ul {
+    list-style: none;
+    padding: 0;
+}
+
+.doctors-achievements li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: #64748B;
+}
+
+.doctors-achievement-icon {
+    color: #EF4444;
+    width: 14px;
+    margin-top: 2px;
+    flex-shrink: 0;
 }
 
 .doctors-card-actions {
@@ -531,232 +624,215 @@
     gap: 0.75rem;
 }
 
-.doctors-book-btn {
+.doctors-book-btn, .doctors-profile-btn {
     flex: 1;
-    padding: 0.75rem 1.5rem;
-    background: #4f46e5;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.doctors-book-btn {
+    background: linear-gradient(135deg, #3B82F6 0%, #8B5CF6 100%);
     color: white;
     border: none;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.doctors-book-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s ease;
-}
-
-.doctors-book-btn:hover::before {
-    left: 100%;
 }
 
 .doctors-book-btn:hover {
-    background: #4338ca;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
 }
 
 .doctors-profile-btn {
-    flex: 1;
-    padding: 0.75rem 1.5rem;
     background: transparent;
-    color: #4f46e5;
-    border: 1px solid #4f46e5;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.doctors-profile-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 100%;
-    background: #4f46e5;
-    transition: width 0.3s ease;
-    z-index: -1;
-}
-
-.doctors-profile-btn:hover::before {
-    width: 100%;
+    color: #3B82F6;
+    border: 1px solid #3B82F6;
 }
 
 .doctors-profile-btn:hover {
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(79, 70, 229, 0.2);
+    background: rgba(59, 130, 246, 0.1);
 }
 
+/* No Results */
 .doctors-no-results {
     text-align: center;
-    padding: 3rem;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
-    animation: fadeIn 0.8s ease-out;
+    padding: 4rem 2rem;
+    grid-column: 1 / -1;
+}
+
+.doctors-no-results-icon {
+    font-size: 4rem;
+    color: #E2E8F0;
+    margin-bottom: 1.5rem;
 }
 
 .doctors-no-results h3 {
     font-size: 1.5rem;
-    color: #2d3748;
+    color: #1E293B;
     margin-bottom: 0.5rem;
 }
 
 .doctors-no-results p {
-    color: #718096;
+    color: #64748B;
+    margin-bottom: 2rem;
+}
+
+.doctors-clear-filters {
+    background: transparent;
+    color: #3B82F6;
+    border: 1px solid #3B82F6;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.doctors-clear-filters:hover {
+    background: rgba(59, 130, 246, 0.1);
 }
 
 /* CTA Section */
 .doctors-cta-section {
-    padding: 5rem 0;
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%);
+    padding: 100px 0;
+    background: linear-gradient(135deg, #1E40AF 0%, #3730A3 100%);
+    color: white;
     text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.doctors-cta-section::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(79, 70, 229, 0.05) 0%, transparent 70%);
-    animation: rotate 20s linear infinite;
-}
-
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
 }
 
 .doctors-cta-content {
     max-width: 700px;
     margin: 0 auto;
-    position: relative;
-    z-index: 1;
-    animation: fadeInUp 1s ease-out;
+}
+
+.doctors-cta-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
 }
 
 .doctors-cta-title {
-    font-size: 2.25rem;
+    font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    color: #2d3748;
 }
 
 .doctors-cta-description {
     font-size: 1.125rem;
-    color: #4a5568;
-    margin-bottom: 2rem;
+    opacity: 0.9;
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
 }
 
 .doctors-cta-buttons {
     display: flex;
-    justify-content: center;
     gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .doctors-cta-btn {
-    padding: 0.875rem 1.75rem;
-    border-radius: 6px;
+    padding: 12px 28px;
+    border-radius: 50px;
     font-weight: 600;
     font-size: 1rem;
-    cursor: pointer;
     transition: all 0.3s ease;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    position: relative;
-    overflow: hidden;
-}
-
-.doctors-cta-btn::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 5px;
-    height: 5px;
-    background: rgba(255, 255, 255, 0.5);
-    opacity: 0;
-    border-radius: 100%;
-    transform: scale(1, 1) translate(-50%);
-    transform-origin: 50% 50%;
-}
-
-.doctors-cta-btn:focus:not(:active)::after {
-    animation: ripple 1s ease-out;
-}
-
-@keyframes ripple {
-    0% {
-        transform: scale(0, 0);
-        opacity: 0.5;
-    }
-    100% {
-        transform: scale(30, 30);
-        opacity: 0;
-    }
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
 }
 
 .doctors-cta-primary {
-    background: #4f46e5;
-    color: white;
+    background: white;
+    color: #1E40AF;
     border: none;
 }
 
 .doctors-cta-primary:hover {
-    background: #4338ca;
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
 }
 
 .doctors-cta-secondary {
     background: transparent;
-    color: #4f46e5;
-    border: 1px solid #4f46e5;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .doctors-cta-secondary:hover {
-    background: #4f46e5;
-    color: white;
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.doctors-cta-btn-icon {
+    font-size: 0.875rem;
+}
+
+/* Animations */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    33% {
+        transform: translateY(-20px) rotate(5deg);
+    }
+    66% {
+        transform: translateY(20px) rotate(-5deg);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+    }
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+    .doctors-hero-title {
+        font-size: 3rem;
+    }
+    
+    .doctors-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
 @media (max-width: 768px) {
     .doctors-hero-title {
         font-size: 2.5rem;
     }
     
-    .doctors-grid {
-        grid-template-columns: 1fr;
+    .doctors-hero-subtitle {
+        font-size: 1.125rem;
     }
     
-    .doctors-specialty-buttons {
-        gap: 0.5rem;
-    }
-    
-    .doctors-specialty-btn {
-        padding: 0.4rem 0.9rem;
-        font-size: 0.8rem;
+    .doctors-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
     
     .doctors-card-actions {
@@ -771,21 +847,69 @@
     .doctors-cta-btn {
         width: 100%;
         max-width: 300px;
-        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .doctors-hero-title {
+        font-size: 2rem;
     }
     
-    .doctors-decorative-circle {
-        display: none;
+    .doctors-hero-cta {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .doctors-primary-btn, .doctors-secondary-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .doctors-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .doctors-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .doctors-specialty-buttons {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 10px;
     }
 }
 
-/* Scroll animations */
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+/* Utility Classes */
+.doctors-btn-icon {
+    font-size: 0.875rem;
 }
 
-/* Smooth scrolling */
-html {
-    scroll-behavior: smooth;
+/* Smooth transitions for all interactive elements */
+button, .doctors-card, .doctors-specialty-btn, .doctors-stat-card {
+    transition: all 0.3s ease;
+}
+
+/* Focus states for accessibility */
+button:focus, input:focus {
+    outline: 2px solid #3B82F6;
+    outline-offset: 2px;
+}
+
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F1F5F9;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
 }
