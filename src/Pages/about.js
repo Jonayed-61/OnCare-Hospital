@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { FaUsers, FaHistory, FaChartLine, FaAward, FaHandsHelping, FaMapMarkerAlt } from 'react-icons/fa';
 import '../Styles/about.css';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
