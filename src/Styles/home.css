@@ -29,12 +29,17 @@
   box-sizing: border-box;
 }
 
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Google Sans', 'Roboto', sans-serif;
   line-height: 1.6;
   color: var(--text);
   background-color: var(--bg);
-  overflow-x: hidden;
+  width: 100%;
 }
 
 h1, h2, h3, h4 {
@@ -47,13 +52,15 @@ h1, h2, h3, h4 {
 /* ============= */
 
 .container {
-  max-width: 100%;
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
 .section {
   padding: 80px 0;
+  width: 100%;
 }
 
 .section-title {
@@ -104,9 +111,9 @@ h1, h2, h3, h4 {
 
 .container1 {
   width: 100%;
-  max-width: 1200px; /* Adjust as needed */
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1.5rem; /* px-6 */
+  padding: 0 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -115,6 +122,7 @@ h1, h2, h3, h4 {
 /* Logo */
 .header-logo {
   height: 50px;
+  max-width: 100%;
   border-radius: 8px;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
@@ -170,16 +178,17 @@ h1, h2, h3, h4 {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   padding: 0 5%;
   align-items: center;
-  justify-content: space-between; /* Distributes space between logo and nav-links */
+  justify-content: space-between;
   position: sticky;
   top: 0;
   z-index: 1000;
+  width: 100%;
 }
 
 /* Nav Links Container (Horizontal Layout) */
 .nav-links {
   display: flex;
-  gap: 20px; /* Adds spacing between nav items */
+  gap: 20px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -233,6 +242,7 @@ h1, h2, h3, h4 {
 .nav-logo {
   height: 40px;
   margin-right: 30px;
+  max-width: 100%;
 }
 
 /* Mobile Responsiveness */
@@ -267,6 +277,7 @@ h1, h2, h3, h4 {
     url('../Assets/doctors.png') center/cover no-repeat;
   background-blend-mode: overlay;
   overflow: hidden;
+  width: 100%;
 }
 
 .hero-section .container {
@@ -274,6 +285,7 @@ h1, h2, h3, h4 {
   flex-direction: column;
   align-items: flex-start;
   min-height: 500px;
+  width: 100%;
 }
 
 .hero-section .text-white {
@@ -304,6 +316,7 @@ h1, h2, h3, h4 {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 /* Base Button Styles */
@@ -318,6 +331,7 @@ h1, h2, h3, h4 {
   transition: all 0.3s ease;
   cursor: pointer;
   border: none;
+  max-width: 100%;
 }
 
 .app-button {
@@ -339,6 +353,7 @@ h1, h2, h3, h4 {
   background: linear-gradient(135deg, #2563eb, #1d4ed8);
   color: white;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
 }
 
 .app-button:hover {
@@ -390,6 +405,7 @@ h1, h2, h3, h4 {
   justify-content: center;
   min-width: 220px;
   text-align: center;
+  max-width: 100%;
 }
 
 /* Primary Button */
@@ -454,12 +470,14 @@ h1, h2, h3, h4 {
 .services-section {
   padding: 100px 0;
   background-color: var(--bg);
+  width: 100%;
 }
 
 .services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 30px;
+  width: 100%;
 }
 
 .service-card {
@@ -470,6 +488,7 @@ h1, h2, h3, h4 {
   transition: all 0.3s ease;
   border: 1px solid var(--border);
   text-align: center;
+  width: 100%;
 }
 
 .service-card:hover {
@@ -482,6 +501,7 @@ h1, h2, h3, h4 {
   color: var(--primary);
   margin-bottom: 20px;
   transition: all 0.3s ease;
+  max-width: 100%;
 }
 
 .service-card:hover .service-icon {
@@ -516,6 +536,7 @@ h1, h2, h3, h4 {
   overflow: hidden;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   cursor: pointer;
+  max-width: 100%;
 }
 
 .service-btn:hover {
@@ -532,6 +553,7 @@ h1, h2, h3, h4 {
 
 .testimonial-section {
   background-color: #f8f9fa;
+  width: 100%;
 }
 
 .testimonial-card {
@@ -539,6 +561,7 @@ h1, h2, h3, h4 {
   border-radius: 12px;
   padding: 30px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  width: 100%;
 }
 
 .testimonial-avatar {
@@ -552,6 +575,7 @@ h1, h2, h3, h4 {
   color: var(--primary);
   font-weight: bold;
   font-size: 1.5rem;
+  max-width: 100%;
 }
 
 .testimonial-rating {
@@ -561,9 +585,10 @@ h1, h2, h3, h4 {
 /* Footer Styles */
 .footer {
   position: relative;
-  background-color: #1a1a2e; /* Dark blue-gray background */
+  background-color: #1a1a2e;
   overflow: hidden;
-  color: #e2e8f0; /* Light text color for better contrast */
+  color: #e2e8f0;
+  width: 100%;
 }
 
 .footer-animation {
@@ -592,6 +617,7 @@ h1, h2, h3, h4 {
 .grid {
   display: grid;
   gap: 2rem;
+  width: 100%;
 }
 
 .grid-cols-1 {
@@ -606,10 +632,11 @@ h1, h2, h3, h4 {
 .footer-logo {
   height: 3rem;
   margin-bottom: 1rem;
+  max-width: 100%;
 }
 
 .text-gray-600 {
-  color: #a0aec0; /* Lighter gray for dark background */
+  color: #a0aec0;
   line-height: 1.5;
 }
 
@@ -623,7 +650,7 @@ h1, h2, h3, h4 {
 }
 
 .text-blue-700 {
-  color: #63b3ed; /* Brighter blue for better visibility */
+  color: #63b3ed;
 }
 
 .mb-4 {
@@ -640,7 +667,7 @@ h1, h2, h3, h4 {
 }
 
 .hover\:text-blue-600:hover {
-  color: #4299e1; /* Brighter blue for hover */
+  color: #4299e1;
 }
 
 .transition-colors {
@@ -661,6 +688,7 @@ address {
 /* Newsletter Form Styles */
 .flex {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .px-4 {
@@ -678,7 +706,7 @@ address {
 }
 
 .border-gray-300 {
-  border-color: #4a5568; /* Darker border for dark background */
+  border-color: #4a5568;
 }
 
 .rounded-l-lg {
@@ -728,7 +756,7 @@ address {
 }
 
 .border-gray-200 {
-  border-color: #2d3748; /* Darker border for dark background */
+  border-color: #2d3748;
 }
 
 .pt-6 {
@@ -740,7 +768,7 @@ address {
 }
 
 .text-gray-500 {
-  color: #718096; /* Lighter gray for dark background */
+  color: #718096;
 }
 
 /* Responsive Adjustments */
@@ -764,7 +792,7 @@ address {
   right: 0;
   height: 4px;
   background: linear-gradient(90deg, 
-    #63b3ed, /* Adjusted colors for dark theme */
+    #63b3ed,
     #9f7aea, 
     #f687b3, 
     #f6ad55, 
@@ -793,6 +821,7 @@ address {
   box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.3);
   border-color: #63b3ed;
 }
+
 /* ================== */
 /* ENHANCED FLOATING BUTTONS */
 /* ================== */
@@ -968,7 +997,7 @@ address {
   }
   
   .floating-btn::before {
-    display: none; /* Hide tooltips on mobile */
+    display: none;
   }
 }
 

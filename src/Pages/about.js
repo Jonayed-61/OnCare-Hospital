@@ -4,6 +4,7 @@ import { IoIosRocket } from 'react-icons/io';
 import { GiHealthPotion } from 'react-icons/gi';
 import '../Styles/about.css';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
