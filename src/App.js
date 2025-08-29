@@ -1,9 +1,17 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import HomePage from './Pages/home';
 import AboutPage from './Pages/about';
+
 import Services from './Pages/services';
 import PartnersPage from './Pages/partners';  
 import ContactPage from './Pages/contact';
+
+import DoctorsPage from './Pages/doctors';
+import CareersPage from './Pages/careers';
+import BlogPage from './Pages/blog';
+
+
+
 
 const router = createBrowserRouter([
   {
@@ -15,6 +23,7 @@ const router = createBrowserRouter([
     element: <AboutPage />,
   },
   {
+
     path: "/services", // Fixed route path
     element: <Services />, // Fixed component reference
   },
@@ -25,6 +34,17 @@ const router = createBrowserRouter([
   {
     path: "/contact",
     element: <ContactPage />,
+
+    path: "/doctors",
+    element: <DoctorsPage />,
+  },
+  {
+    path: "/careers",
+    element: <CareersPage />,
+  },
+  {
+    path: "/blog",
+
   },
 ]);
 
