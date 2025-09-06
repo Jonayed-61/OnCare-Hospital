@@ -1,0 +1,235 @@
+/* Styles/doctor-registration.css */
+.doctor-registration-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding-bottom: 50px;
+}
+
+.registration-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 100px 20px 50px;
+}
+
+.registration-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.registration-header h1 {
+  font-size: 2.5rem;
+  color: #1a244f;
+  margin-bottom: 15px;
+}
+
+.registration-header p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.registration-form {
+  background: white;
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.form-section {
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #eee;
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+}
+
+.form-section h2 {
+  color: #1a244f;
+  margin-bottom: 25px;
+  font-size: 1.5rem;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon svg {
+  position: absolute;
+  left: 15px;
+  color: #666;
+  z-index: 1;
+}
+
+.input-with-icon input,
+.input-with-icon select {
+  width: 100%;
+  padding: 12px 15px 12px 45px;
+  border: 2px solid #e1e5eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.input-with-icon input:focus,
+.input-with-icon select:focus {
+  outline: none;
+  border-color: #4a6cf7;
+}
+
+textarea {
+  width: 100%;
+  padding: 15px;
+  border: 2px solid #e1e5eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+  transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #4a6cf7;
+}
+
+.file-upload {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.file-upload input[type="file"] {
+  position: absolute;
+  left: -9999px;
+}
+
+.file-upload-label {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  background: #f8f9fa;
+  border: 2px dashed #e1e5eb;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.file-upload-label:hover {
+  border-color: #4a6cf7;
+  background: #f0f4ff;
+}
+
+.upload-icon {
+  margin-right: 10px;
+  color: #666;
+}
+
+.form-submit {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.submit-application-btn {
+  background: linear-gradient(135deg, #4a6cf7 0%, #1a244f 100%);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-application-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(74, 108, 247, 0.3);
+}
+
+.form-note {
+  margin-top: 15px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.registration-success {
+  text-align: center;
+  background: white;
+  padding: 60px 40px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.success-icon {
+  font-size: 4rem;
+  color: #4ade80;
+  margin-bottom: 20px;
+}
+
+.registration-success h2 {
+  color: #1a244f;
+  margin-bottom: 15px;
+  font-size: 2rem;
+}
+
+.registration-success p {
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.back-to-doctors-btn {
+  display: inline-flex;
+  align-items: center;
+  background: #4a6cf7;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.back-to-doctors-btn:hover {
+  background: #3b5be3;
+}
+
+.back-to-doctors-btn svg {
+  margin-right: 8px;
+}
+
+@media (max-width: 768px) {
+  .registration-container {
+    padding: 80px 15px 30px;
+  }
+  
+  .registration-form {
+    padding: 25px;
+  }
+  
+  .registration-header h1 {
+    font-size: 2rem;
+  }
+  
+  .form-section h2 {
+    font-size: 1.3rem;
+  }
+}
