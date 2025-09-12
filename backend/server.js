@@ -8,6 +8,7 @@ require('dotenv').config();
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const careersRoutes = require('./routes/careers');
+const partnerRoutes = require('./routes/partners');
 
 const app = express();
 const server = http.createServer(app);
@@ -22,9 +23,12 @@ const io = socketIo(server, {
 });
 
 // Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  credentials: true
+}));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -50,7 +54,8 @@ io.on('connection', (socket) => {
       userId,
       userName,
       isSupport: false,
-      joinedAt: new Date()
+      joinedAt: new Date(),
+      socketId: socket.id
     });
     
     console.log(`User ${userName} (${userId}) joined the chat`);
@@ -72,7 +77,8 @@ io.on('connection', (socket) => {
       userId: agentId,
       userName: agentName,
       isSupport: true,
-      joinedAt: new Date()
+      joinedAt: new Date(),
+      socketId: socket.id
     });
     
     supportAgents.set(agentId, socket.id);
@@ -94,7 +100,10 @@ io.on('connection', (socket) => {
       const message = {
         ...messageData,
         timestamp: new Date(),
-        messageId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        messageId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        senderId: user.userId,
+        senderName: user.userName,
+        isSupport: user.isSupport
       };
       
       // Broadcast to all connected clients
@@ -111,7 +120,7 @@ io.on('connection', (socket) => {
     if (user) {
       typingUsers.add(socket.id);
       socket.broadcast.emit('user-typing', {
-        userId: data.userId,
+        userId: user.userId,
         userName: user.userName,
         isTyping: true
       });
@@ -124,7 +133,7 @@ io.on('connection', (socket) => {
     if (user) {
       typingUsers.delete(socket.id);
       socket.broadcast.emit('user-typing', {
-        userId: data.userId,
+        userId: user.userId,
         userName: user.userName,
         isTyping: false
       });
@@ -132,7 +141,8 @@ io.on('connection', (socket) => {
   });
 
   // Handle disconnection
-  socket.on('disconnect', () => {
+  socket.on('disconnect', (reason) => {
+    console.log(`User ${socket.id} disconnected: ${reason}`);
     const user = connectedUsers.get(socket.id);
     
     if (user) {
@@ -163,22 +173,26 @@ io.on('connection', (socket) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/careers', careersRoutes);
+app.use('/api/partners', partnerRoutes);
 
 // Basic health check route
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     database: mongoose.connection.readyState === 1 ? 'Connected' : 'Disconnected',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
   });
 });
 
 // Chat stats endpoint
 app.get('/api/chat/stats', (req, res) => {
+  const users = Array.from(connectedUsers.values());
   const stats = {
-    totalUsers: Array.from(connectedUsers.values()).filter(user => !user.isSupport).length,
-    totalAgents: Array.from(connectedUsers.values()).filter(user => user.isSupport).length,
-    typingUsers: typingUsers.size
+    totalUsers: users.filter(user => !user.isSupport).length,
+    totalAgents: users.filter(user => user.isSupport).length,
+    typingUsers: typingUsers.size,
+    connectedSockets: users.length
   };
   
   res.json(stats);
@@ -192,11 +206,29 @@ app.use('*', (req, res) => {
 // Error handling middleware
 app.use((error, req, res, next) => {
   console.error(error.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
+  res.status(500).json({ 
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+  });
 });
 
 const PORT = process.env.PORT || 5000;
 
+// Start server
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
+// Handle graceful shutdown
+process.on('SIGINT', () => {
+  console.log('Shutting down gracefully...');
+  server.close(() => {
+    console.log('Server closed.');
+    mongoose.connection.close(false, () => {
+      console.log('MongoDB connection closed.');
+      process.exit(0);
+    });
+  });
+});
+
+module.exports = app;
