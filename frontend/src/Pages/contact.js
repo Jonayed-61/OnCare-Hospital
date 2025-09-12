@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { 
   FaPhone, 
   FaEnvelope, 
@@ -11,13 +11,20 @@ import {
   FaPaperPlane,
   FaHeadset,
   FaComments,
-  FaArrowRight
+  FaArrowRight,
+  FaTimes,
+  FaUser,
+  FaPaperclip,
+  FaSmile,
+  FaVideo,
+  FaPhoneAlt
 } from 'react-icons/fa';
 import '../Styles/contact.css';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import io from 'socket.io-client';
 
 const ContactPage = () => {
     const [formData, setFormData] = useState({
@@ -28,6 +35,15 @@ const ContactPage = () => {
     });
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [activeFAQ, setActiveFAQ] = useState(null);
+    const [showChat, setShowChat] = useState(false);
+    const [chatMessages, setChatMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState('');
+    const [isTyping, setIsTyping] = useState(false);
+    const [chatConnected, setChatConnected] = useState(false);
+    const [userId] = useState(() => `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+    const socketRef = useRef(null);
+    const messagesEndRef = useRef(null);
+    const typingTimeoutRef = useRef(null);
 
     useEffect(() => {
         AOS.init({
@@ -35,7 +51,48 @@ const ContactPage = () => {
             easing: 'ease-in-out-quad',
             once: true
         });
-    }, []);
+
+        // Initialize socket connection
+        socketRef.current = io(process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000');
+
+        socketRef.current.on('connect', () => {
+            console.log('Connected to chat server');
+            setChatConnected(true);
+            
+            // Join chat as user
+            socketRef.current.emit('join-chat', {
+                userId,
+                userName: 'Guest User'
+            });
+        });
+
+        socketRef.current.on('receive-message', (message) => {
+            setChatMessages(prev => [...prev, message]);
+            scrollToBottom();
+        });
+
+        socketRef.current.on('user-typing', (data) => {
+            setIsTyping(data.isTyping);
+        });
+
+        socketRef.current.on('disconnect', () => {
+            setChatConnected(false);
+        });
+
+        return () => {
+            if (socketRef.current) {
+                socketRef.current.disconnect();
+            }
+        };
+    }, [userId]);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [chatMessages]);
 
     const handleChange = (e) => {
         setFormData({
@@ -46,11 +103,9 @@ const ContactPage = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Here you would typically send the form data to your backend
         console.log('Form submitted:', formData);
         setIsSubmitted(true);
         
-        // Reset form after 3 seconds
         setTimeout(() => {
             setIsSubmitted(false);
             setFormData({
@@ -64,6 +119,56 @@ const ContactPage = () => {
 
     const toggleFAQ = (index) => {
         setActiveFAQ(activeFAQ === index ? null : index);
+    };
+
+    const handleChatToggle = () => {
+        setShowChat(!showChat);
+    };
+
+    const handleMessageChange = (e) => {
+        setNewMessage(e.target.value);
+        
+        // Handle typing indicators
+        if (socketRef.current && chatConnected) {
+            socketRef.current.emit('typing-start', { userId, isSupport: false });
+            
+            // Clear previous timeout
+            if (typingTimeoutRef.current) {
+                clearTimeout(typingTimeoutRef.current);
+            }
+            
+            // Set timeout to stop typing indicator
+            typingTimeoutRef.current = setTimeout(() => {
+                socketRef.current.emit('typing-stop', { userId, isSupport: false });
+            }, 1000);
+        }
+    };
+
+    const sendMessage = () => {
+        if (newMessage.trim() && socketRef.current && chatConnected) {
+            const messageData = {
+                userId,
+                userName: 'Guest User',
+                message: newMessage.trim(),
+                isSupport: false,
+                timestamp: new Date()
+            };
+            
+            socketRef.current.emit('send-message', messageData);
+            setNewMessage('');
+            
+            // Stop typing indicator
+            if (socketRef.current) {
+                socketRef.current.emit('typing-stop', { userId, isSupport: false });
+            }
+        }
+    };
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
     };
 
     const contactInfo = [
@@ -179,6 +284,95 @@ const ContactPage = () => {
 
             <Navbar />
 
+            {/* Live Chat Widget */}
+            {showChat && (
+                <div className="live-chat-widget" data-aos="fade-left">
+                    <div className="chat-header">
+                        <div className="chat-header-info">
+                            <div className="chat-avatar">
+                                <FaUser />
+                            </div>
+                            <div>
+                                <h3>MediSheba Support</h3>
+                                <div className={`chat-status ${chatConnected ? 'online' : 'offline'}`}>
+                                    {chatConnected ? 'Online' : 'Offline'}
+                                </div>
+                            </div>
+                        </div>
+                        <button className="chat-close-btn" onClick={handleChatToggle}>
+                            <FaTimes />
+                        </button>
+                    </div>
+
+                    <div className="chat-messages">
+                        {chatMessages.length === 0 ? (
+                            <div className="chat-welcome">
+                                <div className="welcome-avatar">
+                                    <FaHeadset />
+                                </div>
+                                <h4>Welcome to MediSheba Support!</h4>
+                                <p>How can we help you today? Our team is here to assist you.</p>
+                            </div>
+                        ) : (
+                            chatMessages.map((msg, index) => (
+                                <div key={index} className={`chat-message ${msg.isSupport ? 'support' : 'user'}`}>
+                                    <div className="message-content">
+                                        <p>{msg.message}</p>
+                                        <span className="message-time">
+                                            {new Date(msg.timestamp).toLocaleTimeString()}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                        {isTyping && (
+                            <div className="typing-indicator">
+                                <div className="typing-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <span>Support is typing...</span>
+                            </div>
+                        )}
+                        <div ref={messagesEndRef} />
+                    </div>
+
+                    <div className="chat-input-container">
+                        <div className="chat-input-actions">
+                            <button className="chat-action-btn">
+                                <FaPaperclip />
+                            </button>
+                            <button className="chat-action-btn">
+                                <FaSmile />
+                            </button>
+                        </div>
+                        <textarea
+                            value={newMessage}
+                            onChange={handleMessageChange}
+                            onKeyPress={handleKeyPress}
+                            placeholder="Type your message..."
+                            className="chat-input"
+                            rows="1"
+                            disabled={!chatConnected}
+                        />
+                        <button 
+                            onClick={sendMessage}
+                            className="chat-send-btn"
+                            disabled={!newMessage.trim() || !chatConnected}
+                        >
+                            <FaPaperPlane />
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Chat Toggle Button */}
+            <button className="chat-toggle-btn" onClick={handleChatToggle}>
+                <FaHeadset />
+                <span className="chat-badge">{chatConnected ? 'Live' : 'Off'}</span>
+            </button>
+
             {/* Hero Section */}
             <section className="contact-hero-section" style={{
                 background: `linear-gradient(135deg, rgba(59, 130, 246, 0.85) 0%, rgba(139, 92, 246, 0.85) 100%), 
@@ -199,7 +393,10 @@ const ContactPage = () => {
                             <button className="contact-hero-btn contact-hero-btn-primary">
                                 Emergency Contact
                             </button>
-                            <button className="contact-hero-btn contact-hero-btn-secondary">
+                            <button 
+                                className="contact-hero-btn contact-hero-btn-secondary"
+                                onClick={handleChatToggle}
+                            >
                                 <FaHeadset className="mr-2" /> Live Chat
                             </button>
                         </div>
@@ -441,7 +638,10 @@ const ContactPage = () => {
                             Can't find the answer you're looking for? Please chat with our friendly team.
                         </p>
                         <div className="contact-cta-buttons">
-                            <button className="contact-cta-btn contact-cta-primary">
+                            <button 
+                                className="contact-cta-btn contact-cta-primary"
+                                onClick={handleChatToggle}
+                            >
                                 <FaHeadset className="mr-2" /> Start Live Chat
                             </button>
                             <button className="contact-cta-btn contact-cta-secondary">
@@ -451,6 +651,8 @@ const ContactPage = () => {
                     </div>
                 </div>
             </section>
+
+            <Footer />
         </div>
     );
 };

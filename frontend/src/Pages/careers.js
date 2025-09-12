@@ -11,7 +11,13 @@ import {
   FaClock,
   FaArrowRight,
   FaPlus,
-  FaCheck
+  FaCheck,
+  FaTimes,
+  FaUpload,
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaFileAlt
 } from 'react-icons/fa';
 import '../Styles/careers.css';
 import Navbar from '../components/Navbar';
@@ -22,6 +28,18 @@ const CareersPage = () => {
     const [activeFilter, setActiveFilter] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedJob, setExpandedJob] = useState(null);
+    const [showResumeModal, setShowResumeModal] = useState(false);
+    const [selectedPosition, setSelectedPosition] = useState('');
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        position: '',
+        coverLetter: '',
+        resume: null
+    });
+    const [uploadStatus, setUploadStatus] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
     
     useEffect(() => {
         AOS.init({
@@ -169,6 +187,99 @@ const CareersPage = () => {
         }
     };
 
+    const handleResumeSubmit = (position = '') => {
+        setSelectedPosition(position);
+        setFormData(prev => ({
+            ...prev,
+            position: position
+        }));
+        setShowResumeModal(true);
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleFileChange = (e) => {
+        setFormData(prev => ({
+            ...prev,
+            resume: e.target.files[0]
+        }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setUploadStatus('');
+
+        // Validate form
+        if (!formData.name || !formData.email || !formData.resume) {
+            setUploadStatus('Please fill in all required fields');
+            setIsSubmitting(false);
+            return;
+        }
+
+        // Create form data for file upload
+        const submitData = new FormData();
+        submitData.append('name', formData.name);
+        submitData.append('email', formData.email);
+        submitData.append('phone', formData.phone);
+        submitData.append('position', formData.position);
+        submitData.append('coverLetter', formData.coverLetter);
+        submitData.append('resume', formData.resume);
+
+        try {
+            const response = await fetch('http://localhost:5000/api/careers/submit-resume', {
+                method: 'POST',
+                body: submitData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                setUploadStatus('Application submitted successfully!');
+                // Reset form
+                setFormData({
+                    name: '',
+                    email: '',
+                    phone: '',
+                    position: selectedPosition,
+                    coverLetter: '',
+                    resume: null
+                });
+                // Close modal after 2 seconds
+                setTimeout(() => {
+                    setShowResumeModal(false);
+                    setUploadStatus('');
+                }, 2000);
+            } else {
+                setUploadStatus(result.message || 'Error submitting application');
+            }
+        } catch (error) {
+            console.error('Submission error:', error);
+            setUploadStatus('Network error. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const closeModal = () => {
+        setShowResumeModal(false);
+        setUploadStatus('');
+        setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            position: '',
+            coverLetter: '',
+            resume: null
+        });
+    };
+
     return (
         <div className="careers-page font-sans bg-gray-50 relative overflow-hidden">
             {/* Animated Background Elements */}
@@ -186,6 +297,129 @@ const CareersPage = () => {
 
             <Navbar />
 
+            {/* Resume Submission Modal */}
+            {showResumeModal && (
+                <div className="careers-modal-overlay">
+                    <div className="careers-modal" data-aos="zoom-in">
+                        <div className="careers-modal-header">
+                            <h3>Submit Your Resume</h3>
+                            <button className="careers-modal-close" onClick={closeModal}>
+                                <FaTimes />
+                            </button>
+                        </div>
+                        
+                        <form onSubmit={handleSubmit} className="careers-resume-form">
+                            <div className="careers-form-group">
+                                <label>
+                                    <FaUser className="careers-form-icon" />
+                                    Full Name *
+                                </label>
+                                <input
+                                    type="text"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+                            
+                            <div className="careers-form-group">
+                                <label>
+                                    <FaEnvelope className="careers-form-icon" />
+                                    Email Address *
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                            </div>
+                            
+                            <div className="careers-form-group">
+                                <label>
+                                    <FaPhone className="careers-form-icon" />
+                                    Phone Number
+                                </label>
+                                <input
+                                    type="tel"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            
+                            <div className="careers-form-group">
+                                <label>Position Applying For</label>
+                                <input
+                                    type="text"
+                                    name="position"
+                                    value={formData.position}
+                                    onChange={handleInputChange}
+                                    placeholder="e.g., Senior Cardiologist"
+                                />
+                            </div>
+                            
+                            <div className="careers-form-group">
+                                <label>Cover Letter</label>
+                                <textarea
+                                    name="coverLetter"
+                                    value={formData.coverLetter}
+                                    onChange={handleInputChange}
+                                    rows="4"
+                                    placeholder="Tell us why you're interested in this position..."
+                                />
+                            </div>
+                            
+                            <div className="careers-form-group">
+                                <label>
+                                    <FaUpload className="careers-form-icon" />
+                                    Upload Resume (PDF, DOC, DOCX) *
+                                </label>
+                                <div className="careers-file-upload">
+                                    <input
+                                        type="file"
+                                        accept=".pdf,.doc,.docx"
+                                        onChange={handleFileChange}
+                                        required
+                                    />
+                                    <span className="careers-file-name">
+                                        {formData.resume ? formData.resume.name : 'Choose file'}
+                                    </span>
+                                    <button type="button" className="careers-file-btn">
+                                        Browse
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            {uploadStatus && (
+                                <div className={`careers-upload-status ${uploadStatus.includes('successfully') ? 'success' : 'error'}`}>
+                                    {uploadStatus}
+                                </div>
+                            )}
+                            
+                            <div className="careers-form-actions">
+                                <button 
+                                    type="button" 
+                                    className="careers-cancel-btn"
+                                    onClick={closeModal}
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    type="submit" 
+                                    className="careers-submit-btn"
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? 'Submitting...' : 'Submit Application'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
             {/* Hero Section */}
             <section className="careers-hero-section" style={{
                 background: `linear-gradient(135deg, rgba(26, 36, 79, 0.85) 0%, rgba(39, 60, 117, 0.9) 100%), 
@@ -201,7 +435,9 @@ const CareersPage = () => {
                         </p>
                         <div className="careers-hero-cta" data-aos="fade-up" data-aos-delay="500">
                             <button className="careers-primary-btn">View Open Positions</button>
-                            <button className="careers-secondary-btn">Learn About Our Culture</button>
+                            <button className="careers-secondary-btn" onClick={() => handleResumeSubmit()}>
+                                Submit Your Resume
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -350,7 +586,10 @@ const CareersPage = () => {
                                 </div>
                                 
                                 <div className="careers-job-actions">
-                                    <button className="careers-apply-btn">
+                                    <button 
+                                        className="careers-apply-btn"
+                                        onClick={() => handleResumeSubmit(job.title)}
+                                    >
                                         Apply Now
                                     </button>
                                     <button 
@@ -416,7 +655,10 @@ const CareersPage = () => {
                             <button className="careers-cta-btn careers-cta-primary">
                                 Explore All Positions
                             </button>
-                            <button className="careers-cta-btn careers-cta-secondary">
+                            <button 
+                                className="careers-cta-btn careers-cta-secondary"
+                                onClick={() => handleResumeSubmit()}
+                            >
                                 Submit Your Resume
                             </button>
                         </div>
