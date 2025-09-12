@@ -927,3 +927,229 @@
         font-size: 1.1rem;
     }
 }
+/* Resume Modal Styles */
+.careers-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.careers-modal {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.careers-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 24px 0;
+    margin-bottom: 20px;
+}
+
+.careers-modal-header h3 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a244f;
+}
+
+.careers-modal-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: color 0.2s;
+}
+
+.careers-modal-close:hover {
+    color: #1a244f;
+}
+
+.careers-resume-form {
+    padding: 0 24px 24px;
+}
+
+.careers-form-group {
+    margin-bottom: 20px;
+}
+
+.careers-form-group label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.careers-form-icon {
+    margin-right: 8px;
+    color: #4f46e5;
+}
+
+.careers-form-group input,
+.careers-form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+}
+
+.careers-form-group input:focus,
+.careers-form-group textarea:focus {
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.careers-file-upload {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.careers-file-upload input[type="file"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.careers-file-name {
+    flex: 1;
+    padding: 12px 16px;
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 8px 0 0 8px;
+    border-right: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+.careers-file-btn {
+    padding: 12px 16px;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    z-index: 1;
+}
+
+.careers-file-btn:hover {
+    background: #4338ca;
+}
+
+.careers-upload-status {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.careers-upload-status.success {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.careers-upload-status.error {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.careers-form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.careers-cancel-btn {
+    padding: 12px 20px;
+    background: #f3f4f6;
+    color: #374151;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: 500;
+}
+
+.careers-cancel-btn:hover {
+    background: #e5e7eb;
+}
+
+.careers-submit-btn {
+    padding: 12px 20px;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: 500;
+}
+
+.careers-submit-btn:hover:not(:disabled) {
+    background: #4338ca;
+}
+
+.careers-submit-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+/* Update the apply button in job listings */
+.careers-apply-btn {
+    background: #4f46e5;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-weight: 500;
+}
+
+.careers-apply-btn:hover {
+    background: #4338ca;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .careers-modal {
+        margin: 20px;
+        max-height: 80vh;
+    }
+    
+    .careers-form-actions {
+        flex-direction: column;
+    }
+    
+    .careers-cancel-btn,
+    .careers-submit-btn {
+        width: 100%;
+    }
+}
