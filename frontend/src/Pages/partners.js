@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   FaHandshake, 
   FaHospital, 
@@ -8,7 +8,10 @@ import {
   FaAward,
   FaChartLine,
   FaUsers,
-  FaGlobeAmericas
+  FaGlobeAmericas,
+  FaUpload,
+  FaCheckCircle,
+  FaTimesCircle
 } from 'react-icons/fa';
 import '../Styles/partners.css';
 import Navbar from '../components/Navbar';
@@ -17,6 +20,30 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 const PartnersPage = () => {
+    const [showApplicationModal, setShowApplicationModal] = useState(false);
+    const [applicationSuccess, setApplicationSuccess] = useState(false);
+    const [applicationError, setApplicationError] = useState('');
+    const [formData, setFormData] = useState({
+        organizationName: '',
+        organizationType: '',
+        contactPerson: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        servicesOffered: '',
+        yearsInOperation: '',
+        numberOfStaff: '',
+        website: '',
+        message: ''
+    });
+    const [files, setFiles] = useState({
+        businessLicense: null,
+        taxCertificate: null,
+        additionalDocuments: []
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     useEffect(() => {
         AOS.init({
             duration: 1000,
@@ -24,6 +51,111 @@ const PartnersPage = () => {
             once: true
         });
     }, []);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleFileChange = (e, fileType) => {
+        if (fileType === 'additionalDocuments') {
+            setFiles(prev => ({
+                ...prev,
+                additionalDocuments: [...e.target.files]
+            }));
+        } else {
+            setFiles(prev => ({
+                ...prev,
+                [fileType]: e.target.files[0]
+            }));
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setApplicationError('');
+
+        try {
+            const submitData = new FormData();
+            
+            // Append form data
+            Object.keys(formData).forEach(key => {
+                if (formData[key] !== '') {
+                    submitData.append(key, formData[key]);
+                }
+            });
+            
+            // Append files
+            if (files.businessLicense) {
+                submitData.append('businessLicense', files.businessLicense);
+            }
+            if (files.taxCertificate) {
+                submitData.append('taxCertificate', files.taxCertificate);
+            }
+            files.additionalDocuments.forEach(file => {
+                submitData.append('additionalDocuments', file);
+            });
+
+            const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+            
+            const response = await fetch(`${API_BASE_URL}/api/partners/apply`, {
+                method: 'POST',
+                body: submitData
+            });
+
+            // Check if response is OK before parsing as JSON
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Server error:', response.status, errorText);
+                
+                // Try to parse as JSON if possible
+                try {
+                    const errorData = JSON.parse(errorText);
+                    throw new Error(errorData.message || `Server error: ${response.status}`);
+                } catch (parseError) {
+                    throw new Error(`Server returned ${response.status}: ${errorText.substring(0, 100)}...`);
+                }
+            }
+
+            const result = await response.json();
+
+            if (result.success) {
+                setApplicationSuccess(true);
+                setShowApplicationModal(false);
+                // Reset form
+                setFormData({
+                    organizationName: '',
+                    organizationType: '',
+                    contactPerson: '',
+                    email: '',
+                    phone: '',
+                    address: '',
+                    city: '',
+                    servicesOffered: '',
+                    yearsInOperation: '',
+                    numberOfStaff: '',
+                    website: '',
+                    message: ''
+                });
+                setFiles({
+                    businessLicense: null,
+                    taxCertificate: null,
+                    additionalDocuments: []
+                });
+            } else {
+                setApplicationError(result.message || 'Failed to submit application');
+            }
+        } catch (error) {
+            console.error('Submission error:', error);
+            setApplicationError(error.message || 'Network error. Please try again. Make sure the backend server is running on port 5001.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     // Sample partner data
     const hospitalPartners = [
@@ -122,6 +254,323 @@ const PartnersPage = () => {
             <div className="partners-decorative-circle partners-circle-3"></div>
 
             <Navbar />
+
+            {/* Application Success Modal */}
+            {applicationSuccess && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg p-6 max-w-md w-full">
+                        <div className="text-center">
+                            <FaCheckCircle className="text-green-500 text-5xl mx-auto mb-4" />
+                            <h3 className="text-2xl font-bold text-gray-800 mb-2">Application Submitted</h3>
+                            <p className="text-gray-600 mb-4">
+                                Thank you for your interest in partnering with us. We've received your application and will review it shortly.
+                            </p>
+                            <button 
+                                onClick={() => setApplicationSuccess(false)}
+                                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                            >
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Application Modal */}
+            {showApplicationModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+                    <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div className="flex justify-between items-center mb-6">
+                            <h2 className="text-2xl font-bold text-gray-800">Partnership Application</h2>
+                            <button 
+                                onClick={() => setShowApplicationModal(false)}
+                                className="text-gray-500 hover:text-gray-700"
+                            >
+                                <FaTimesCircle size={24} />
+                            </button>
+                        </div>
+
+                        {applicationError && (
+                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                                <strong>Error:</strong> {applicationError}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Organization Name *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="organizationName"
+                                        value={formData.organizationName}
+                                        onChange={handleInputChange}
+                                        required
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Organization Type *
+                                    </label>
+                                    <select
+                                        name="organizationType"
+                                        value={formData.organizationType}
+                                        onChange={handleInputChange}
+                                        required
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    >
+                                        <option value="">Select Type</option>
+                                        <option value="hospital">Hospital</option>
+                                        <option value="clinic">Clinic</option>
+                                        <option value="diagnostic_center">Diagnostic Center</option>
+                                        <option value="pharmacy">Pharmacy</option>
+                                        <option value="ambulance_service">Ambulance Service</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Contact Person *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="contactPerson"
+                                        value={formData.contactPerson}
+                                        onChange={handleInputChange}
+                                        required
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Email Address *
+                                    </label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        required
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Phone Number *
+                                    </label>
+                                    <input
+                                        type="tel"
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleInputChange}
+                                        required
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        City *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="city"
+                                        value={formData.city}
+                                        onChange={handleInputChange}
+                                        required
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Full Address *
+                                </label>
+                                <textarea
+                                    name="address"
+                                    value={formData.address}
+                                    onChange={handleInputChange}
+                                    required
+                                    rows={3}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Years in Operation
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="yearsInOperation"
+                                        value={formData.yearsInOperation}
+                                        onChange={handleInputChange}
+                                        min="0"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Number of Staff
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="numberOfStaff"
+                                        value={formData.numberOfStaff}
+                                        onChange={handleInputChange}
+                                        min="1"
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Services Offered (comma separated)
+                                </label>
+                                <textarea
+                                    name="servicesOffered"
+                                    value={formData.servicesOffered}
+                                    onChange={handleInputChange}
+                                    placeholder="e.g., Cardiology, Radiology, Laboratory Tests"
+                                    rows={2}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Website
+                                </label>
+                                <input
+                                    type="url"
+                                    name="website"
+                                    value={formData.website}
+                                    onChange={handleInputChange}
+                                    placeholder="https://example.com"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Business License (PDF, JPG, PNG) *
+                                </label>
+                                <div className="flex items-center space-x-2">
+                                    <label className="flex-1 cursor-pointer">
+                                        <input
+                                            type="file"
+                                            onChange={(e) => handleFileChange(e, 'businessLicense')}
+                                            accept=".pdf,.jpg,.jpeg,.png"
+                                            required
+                                            className="hidden"
+                                        />
+                                        <div className="w-full px-4 py-2 border border-gray-300 rounded-lg flex items-center justify-between">
+                                            <span className="text-gray-500">
+                                                {files.businessLicense ? files.businessLicense.name : 'Choose file'}
+                                            </span>
+                                            <FaUpload className="text-gray-400" />
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Tax Certificate (PDF, JPG, PNG) *
+                                </label>
+                                <div className="flex items-center space-x-2">
+                                    <label className="flex-1 cursor-pointer">
+                                        <input
+                                            type="file"
+                                            onChange={(e) => handleFileChange(e, 'taxCertificate')}
+                                            accept=".pdf,.jpg,.jpeg,.png"
+                                            required
+                                            className="hidden"
+                                        />
+                                        <div className="w-full px-4 py-2 border border-gray-300 rounded-lg flex items-center justify-between">
+                                            <span className="text-gray-500">
+                                                {files.taxCertificate ? files.taxCertificate.name : 'Choose file'}
+                                            </span>
+                                            <FaUpload className="text-gray-400" />
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Additional Documents (Optional)
+                                </label>
+                                <div className="flex items-center space-x-2">
+                                    <label className="flex-1 cursor-pointer">
+                                        <input
+                                            type="file"
+                                            onChange={(e) => handleFileChange(e, 'additionalDocuments')}
+                                            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                                            multiple
+                                            className="hidden"
+                                        />
+                                        <div className="w-full px-4 py-2 border border-gray-300 rounded-lg flex items-center justify-between">
+                                            <span className="text-gray-500">
+                                                {files.additionalDocuments.length > 0 
+                                                    ? `${files.additionalDocuments.length} file(s) selected` 
+                                                    : 'Choose files (optional)'}
+                                            </span>
+                                            <FaUpload className="text-gray-400" />
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                    Additional Message
+                                </label>
+                                <textarea
+                                    name="message"
+                                    value={formData.message}
+                                    onChange={handleInputChange}
+                                    placeholder="Tell us more about your organization and why you want to partner with us"
+                                    rows={4}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                />
+                            </div>
+
+                            <div className="flex justify-end space-x-4 pt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowApplicationModal(false)}
+                                    className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isSubmitting ? 'Submitting...' : 'Submit Application'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
 
             {/* Hero Section */}
             <section className="partners-hero-section" style={{
@@ -307,7 +756,10 @@ const PartnersPage = () => {
                             Join our network of healthcare providers and expand your reach while delivering quality care to more patients.
                         </p>
                         <div className="partners-cta-buttons">
-                            <button className="partners-cta-btn partners-cta-primary">
+                            <button 
+                                className="partners-cta-btn partners-cta-primary"
+                                onClick={() => setShowApplicationModal(true)}
+                            >
                                 Apply for Partnership
                             </button>
                             <button className="partners-cta-btn partners-cta-secondary">
@@ -317,6 +769,8 @@ const PartnersPage = () => {
                     </div>
                 </div>
             </section>
+
+            <Footer />
         </div>
     );
 };
