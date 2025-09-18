@@ -912,3 +912,16 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+.partners-page {
+    position: relative;
+}
+
+/* Ensure there's no duplicate content caused by animations */
+[data-aos].aos-animate {
+    pointer-events: auto;
+}
+
+/* Hide any potential duplicate elements */
+.partners-page > *:not(:first-child):last-child {
+    display: none;
+}

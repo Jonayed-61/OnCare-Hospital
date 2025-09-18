@@ -1,7 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import HomePage from './Pages/home';
 import AboutPage from './Pages/about';
-
 import Services from './Pages/services';
 import PartnersPage from './Pages/partners';  
 import ContactPage from './Pages/contact';
@@ -14,8 +13,6 @@ import LoginPage from './Pages/login';
 import RegisterPage from './Pages/register';
 import ProfilePage from './Pages/profile';
 
-
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -26,18 +23,14 @@ const router = createBrowserRouter([
     element: <AboutPage />,
   },
   {
-
-    path: "/services", // Fixed route path
-    element: <Services />, // Fixed component reference
+    path: "/services",
+    element: <Services />,
   },
   {
     path: "/partners",
     element: <PartnersPage />,
   },
   {
-    path: "/contact",
-    element: <ContactPage />,
-
     path: "/doctors",
     element: <DoctorsPage />,
   },
@@ -49,7 +42,6 @@ const router = createBrowserRouter([
     path: "/blog",
     element: <BlogPage />,
   },
-
   {
     path: "/contact",
     element: <ContactPage />,
