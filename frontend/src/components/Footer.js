@@ -45,7 +45,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-gray-200 pt-6 text-center text-gray-500">
-          <p>© 2023 OnCare. All rights reserved</p>
+          <p>Â© 2023 OnCare. All rights reserved</p>
         </div>
       </div>
       
