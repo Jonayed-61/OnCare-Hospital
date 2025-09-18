@@ -45,7 +45,11 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-gray-200 pt-6 text-center text-gray-500">
+<<<<<<< HEAD
           <p>Â© 2023 OnCare. All rights reserved</p>
+=======
+          <p>© 2023 OnCare. All rights reserved</p>
+>>>>>>> aae9545e939498d798dd79c566d075a596cb4486
         </div>
       </div>
       
