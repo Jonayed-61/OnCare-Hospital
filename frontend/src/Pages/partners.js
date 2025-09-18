@@ -871,7 +871,7 @@ const PartnersPage = () => {
                 </div>
             </section>
 
-            <Footer />
+            
         </div>
     );
 };
