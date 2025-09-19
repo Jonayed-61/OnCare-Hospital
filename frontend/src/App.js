@@ -14,6 +14,7 @@ import RegisterPage from './Pages/register';
 import ProfilePage from './Pages/profile';
 import PartnershipApplication from './Pages/PartnershipApplication';
 
+
 const router = createBrowserRouter([
   {
     path: "/",

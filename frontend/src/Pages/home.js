@@ -163,7 +163,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Use the Footer component */}
+      
       <Footer />
     </div>
   );
