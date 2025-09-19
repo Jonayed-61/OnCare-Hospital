@@ -12,7 +12,13 @@ import RegistrationPage from './Pages/registration';
 import LoginPage from './Pages/login';
 import RegisterPage from './Pages/register';
 import ProfilePage from './Pages/profile';
+<<<<<<< HEAD
 import PartnershipApplication from './Pages/PartnershipApplication';
+=======
+import AdminDashboard from './Pages/adminDashboard';
+import AdminLogin from './Pages/adminLogin';
+
+>>>>>>> dfe8809e3228b61391fd64c79f165441f3252a2b
 
 
 const router = createBrowserRouter([
@@ -71,6 +77,14 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: <ProfilePage />,
+  },
+  {
+    path: "/admin-dashboard",
+    element: <AdminDashboard />,
+  },
+  {
+    path: "/admin-login",
+    element: <AdminLogin />,
   },
 ]);
 

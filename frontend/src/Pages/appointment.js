@@ -10,6 +10,11 @@ import Navbar from '../components/Navbar';
 import '../Styles/appointment.css';
 
 const AppointmentPage = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -166,6 +171,10 @@ const AppointmentPage = () => {
   };
 
   const nextStep = () => {
+    if (!isAuthenticated) {
+      window.location.href = '/login';
+      return;
+    }
     setCurrentStep(currentStep + 1);
   };
 
@@ -175,6 +184,10 @@ const AppointmentPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      window.location.href = '/login';
+      return;
+    }
     // Simulate form submission
     setTimeout(() => {
       setIsSubmitted(true);

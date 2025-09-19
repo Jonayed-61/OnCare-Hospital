@@ -84,9 +84,20 @@ export default function LoginPage() {
         // Store the token in localStorage or context
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        
-        // Redirect based on user type or to dashboard
-        navigate('/');
+
+        // Redirect to admin dashboard if admin
+        if (data.user && (data.user.role === 'admin' || data.user.email === 'admin@example.com')) {
+          navigate('/admin-dashboard');
+        } else {
+            // Check for post-login redirect
+            const redirectPath = localStorage.getItem('postLoginRedirect');
+            if (redirectPath) {
+              localStorage.removeItem('postLoginRedirect');
+              navigate(redirectPath);
+            } else {
+              navigate('/');
+            }
+        }
       } else {
         // Login failed - show specific error messages
         if (data.message === 'Invalid credentials') {
@@ -227,13 +238,24 @@ export default function LoginPage() {
                 </Link>
               </div>
 
-              <button
-                type="submit"
-                className="login-button"
-                disabled={isLoading}
-              >
-                {isLoading ? 'Signing in...' : 'Sign In'}
-              </button>
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'space-between', marginTop: '10px' }}>
+                <button
+                  type="submit"
+                  className="login-button"
+                  disabled={isLoading}
+                  style={{ minWidth: '120px' }}
+                >
+                  {isLoading ? 'Signing in...' : 'Sign In'}
+                </button>
+                <button
+                  type="button"
+                  className="login-button admin-login-btn"
+                  style={{ backgroundColor: '#2d3748', color: '#fff', minWidth: '120px' }}
+                  onClick={() => navigate('/admin-login')}
+                >
+                  Admin
+                </button>
+              </div>
             </form>
 
             <div className="divider">
