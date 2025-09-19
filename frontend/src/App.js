@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import HomePage from './Pages/home';
 import AboutPage from './Pages/about';
 import Services from './Pages/services';
-import PartnersPage from './Pages/partners';  
+import PartnersPage from './Pages/partners';
 import ContactPage from './Pages/contact';
 import AppointmentPage from './Pages/appointment';
 import DoctorsPage from './Pages/doctors';
@@ -12,6 +12,7 @@ import RegistrationPage from './Pages/registration';
 import LoginPage from './Pages/login';
 import RegisterPage from './Pages/register';
 import ProfilePage from './Pages/profile';
+import PartnershipApplication from './Pages/PartnershipApplication';
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <RegisterPage />,
+  },
+  {
+    path: "/partnershipapplication",
+    element: <PartnershipApplication />,
   },
   {
     path: "/profile",
