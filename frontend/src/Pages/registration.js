@@ -48,6 +48,7 @@ const DoctorRegistration = () => {
     }));
   };
 
+// In your DoctorRegistration component
 const handleSubmit = async (e) => {
   e.preventDefault();
   setLoading(true);
@@ -56,7 +57,7 @@ const handleSubmit = async (e) => {
   try {
     const data = new FormData();
     
-    // Append all form fields to FormData
+    // Append all form fields
     Object.keys(formData).forEach(key => {
       if (key === 'image' && formData[key]) {
         data.append(key, formData[key]);
@@ -65,32 +66,22 @@ const handleSubmit = async (e) => {
       }
     });
 
-    // Use absolute URL to avoid routing issues
     const response = await fetch('http://localhost:5000/api/auth/doctor-register', {
       method: 'POST',
       body: data,
     });
 
-    // Check if response is HTML instead of JSON
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      const text = await response.text();
-      console.error('Received HTML instead of JSON:', text.substring(0, 200));
-      throw new Error('Server returned an error page. Check if backend is running correctly.');
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Registration failed');
     }
 
     const responseData = await response.json();
-    console.log('Response status:', response.status);
-    console.log('Response data:', responseData);
-
-    if (response.ok) {
-      console.log('Form submitted successfully:', responseData);
-      setSubmitted(true);
-    } else {
-      throw new Error(responseData.message || responseData.error || 'Failed to submit application');
-    }
+    console.log('Registration successful:', responseData);
+    setSubmitted(true);
+    
   } catch (err) {
-    console.error('Submission error:', err);
+    console.error('Registration error:', err);
     setError(err.message || 'Failed to submit application');
   } finally {
     setLoading(false);

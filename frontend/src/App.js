@@ -13,6 +13,8 @@ import RegistrationPage from './Pages/registration';
 import LoginPage from './Pages/login';
 import RegisterPage from './Pages/register';
 import ProfilePage from './Pages/profile';
+import AdminDashboard from './Pages/adminDashboard';
+import AdminLogin from './Pages/adminLogin';
 
 
 
@@ -73,6 +75,14 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: <ProfilePage />,
+  },
+  {
+    path: "/admin-dashboard",
+    element: <AdminDashboard />,
+  },
+  {
+    path: "/admin-login",
+    element: <AdminLogin />,
   },
 ]);
 

@@ -45,6 +45,17 @@ const DoctorsPage = () => {
         };
     }, []);
 
+        // Check login status
+        const isLoggedIn = !!localStorage.getItem('token');
+        const handleJoinOurTeam = () => {
+            if (isLoggedIn) {
+                window.location.href = '/registration';
+            } else {
+                // Store intended redirect
+                localStorage.setItem('postLoginRedirect', '/registration');
+                window.location.href = '/login';
+            }
+        };
     const checkIsMobile = () => {
         setIsMobile(window.innerWidth < 768);
     };
@@ -469,9 +480,9 @@ const DoctorsPage = () => {
                                 View All Specialties
                             </button>
                             <button
-                                className="doctors-cta-btn doctors-cta-tertiary"
-                                onClick={() => window.location.href = '/registration'}
-                            >
+                                    className="doctors-cta-btn doctors-cta-tertiary"
+                                    onClick={handleJoinOurTeam}
+                                >
                                 <FaUserMd className="doctors-cta-btn-icon" /> Join Our Team
                             </button>
                         </div>
