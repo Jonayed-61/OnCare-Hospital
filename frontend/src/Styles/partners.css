@@ -641,3 +641,27 @@
     width: 100%;
     position: relative;
 }
+/* Gradient backgrounds */
+.bg-gradient-to-br {
+  background: linear-gradient(135deg, #eff6ff 0%, #faf5ff 100%);
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+/* Shadow effects */
+.shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Blur effects for decorative elements */
+.blur-3xl {
+  filter: blur(72px);
+}
+
+/* Custom button styles */
+.hover\:from-blue-700:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+}
