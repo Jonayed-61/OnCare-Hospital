@@ -33,6 +33,8 @@ const ContactPage = () => {
         subject: '',
         message: ''
     });
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const navigate = useRef(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [activeFAQ, setActiveFAQ] = useState(null);
     const [showChat, setShowChat] = useState(false);
@@ -51,34 +53,33 @@ const ContactPage = () => {
             easing: 'ease-in-out-quad',
             once: true
         });
-
-        // Initialize socket connection
-        socketRef.current = io(process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000');
-
-        socketRef.current.on('connect', () => {
-            console.log('Connected to chat server');
-            setChatConnected(true);
-            
-            // Join chat as user
-            socketRef.current.emit('join-chat', {
-                userId,
-                userName: 'Guest User'
+        // Check authentication
+        const token = localStorage.getItem('token');
+        setIsAuthenticated(!!token);
+        if (!token) {
+            // Optionally redirect to login page
+            // window.location.href = '/login';
+        } else {
+            // Initialize socket connection
+            socketRef.current = io(process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000');
+            socketRef.current.on('connect', () => {
+                setChatConnected(true);
+                socketRef.current.emit('join-chat', {
+                    userId,
+                    userName: 'Guest User'
+                });
             });
-        });
-
-        socketRef.current.on('receive-message', (message) => {
-            setChatMessages(prev => [...prev, message]);
-            scrollToBottom();
-        });
-
-        socketRef.current.on('user-typing', (data) => {
-            setIsTyping(data.isTyping);
-        });
-
-        socketRef.current.on('disconnect', () => {
-            setChatConnected(false);
-        });
-
+            socketRef.current.on('receive-message', (message) => {
+                setChatMessages(prev => [...prev, message]);
+                scrollToBottom();
+            });
+            socketRef.current.on('user-typing', (data) => {
+                setIsTyping(data.isTyping);
+            });
+            socketRef.current.on('disconnect', () => {
+                setChatConnected(false);
+            });
+        }
         return () => {
             if (socketRef.current) {
                 socketRef.current.disconnect();
@@ -122,6 +123,10 @@ const ContactPage = () => {
     };
 
     const handleChatToggle = () => {
+        if (!isAuthenticated) {
+            window.location.href = '/login';
+            return;
+        }
         setShowChat(!showChat);
     };
 
@@ -145,6 +150,10 @@ const ContactPage = () => {
     };
 
     const sendMessage = () => {
+        if (!isAuthenticated) {
+            window.location.href = '/login';
+            return;
+        }
         if (newMessage.trim() && socketRef.current && chatConnected) {
             const messageData = {
                 userId,
@@ -153,11 +162,8 @@ const ContactPage = () => {
                 isSupport: false,
                 timestamp: new Date()
             };
-            
             socketRef.current.emit('send-message', messageData);
             setNewMessage('');
-            
-            // Stop typing indicator
             if (socketRef.current) {
                 socketRef.current.emit('typing-stop', { userId, isSupport: false });
             }
@@ -271,6 +277,12 @@ const ContactPage = () => {
 
     return (
         <div className="contact-page font-sans bg-gray-50 relative overflow-hidden">
+            {!isAuthenticated && (
+                <div className="auth-warning">
+                    <p>You must be logged in to use live chat, book appointments, or join our team.</p>
+                    <button onClick={() => window.location.href = '/login'}>Login</button>
+                </div>
+            )}
             {/* Animated background elements */}
             <div className="contact-animated-bg">
                 <div className="contact-circle"></div>
