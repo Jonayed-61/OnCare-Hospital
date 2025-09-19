@@ -101,6 +101,24 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
+    // Check if credentials match an admin
+    const Admin = require('../models/admin');
+    const bcrypt = require('bcryptjs');
+    const admin = await Admin.findOne({ email });
+    if (admin && await bcrypt.compare(password, admin.password)) {
+      const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
+      return res.json({
+        message: 'Login successful',
+        user: {
+          id: admin._id,
+          email: admin.email,
+          role: admin.role ? admin.role.toLowerCase() : 'admin',
+          phone: admin.phone
+        },
+        token
+      });
+    }
+
     // Find user
     const user = await User.findOne({ email });
     if (!user) {

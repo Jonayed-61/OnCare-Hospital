@@ -9,6 +9,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const careersRoutes = require('./routes/careers');
 const partnerRoutes = require('./routes/partners');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 const server = http.createServer(app);
@@ -95,7 +96,6 @@ io.on('connection', (socket) => {
   // Handle message sending
   socket.on('send-message', (messageData) => {
     const user = connectedUsers.get(socket.id);
-    
     if (user) {
       const message = {
         ...messageData,
@@ -105,10 +105,28 @@ io.on('connection', (socket) => {
         senderName: user.userName,
         isSupport: user.isSupport
       };
-      
-      // Broadcast to all connected clients
-      io.emit('receive-message', message);
-      
+      // If admin (support) sends a message, also emit to the specific user if userId is present
+      if (user.isSupport && messageData.targetUserId) {
+        for (const [sockId, info] of connectedUsers.entries()) {
+          if (info.userId === messageData.targetUserId && !info.isSupport) {
+            io.to(sockId).emit('receive-message', message);
+          }
+        }
+      }
+      // If user sends a message, emit to all support agents and to self only (not all clients)
+      if (!user.isSupport) {
+        for (const [sockId, info] of connectedUsers.entries()) {
+          if (info.isSupport) {
+            io.to(sockId).emit('receive-message', message);
+          }
+        }
+        // Also send to self (user)
+        socket.emit('receive-message', message);
+      }
+      // For admin, also send to self
+      if (user.isSupport) {
+        socket.emit('receive-message', message);
+      }
       console.log(`Message from ${user.userName}: ${messageData.message}`);
     }
   });
@@ -174,6 +192,7 @@ io.on('connection', (socket) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/careers', careersRoutes);
 app.use('/api/partners', partnerRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Basic health check route
 app.get('/api/health', (req, res) => {
