@@ -80,23 +80,14 @@ export default function LoginPage() {
       if (response.ok) {
         // Login successful
         console.log('Login successful:', data);
-        
-        // Store the token in localStorage or context
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
 
-        // Redirect to admin dashboard if admin
+        // Redirect to admin dashboard if admin, else home page
         if (data.user && (data.user.role === 'admin' || data.user.email === 'admin@example.com')) {
           navigate('/admin-dashboard');
         } else {
-            // Check for post-login redirect
-            const redirectPath = localStorage.getItem('postLoginRedirect');
-            if (redirectPath) {
-              localStorage.removeItem('postLoginRedirect');
-              navigate(redirectPath);
-            } else {
-              navigate('/');
-            }
+          navigate('/');
         }
       } else {
         // Login failed - show specific error messages

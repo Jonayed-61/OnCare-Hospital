@@ -107,10 +107,16 @@ io.on('connection', (socket) => {
       };
       // If admin (support) sends a message, also emit to the specific user if userId is present
       if (user.isSupport && messageData.targetUserId) {
+        let foundUser = false;
         for (const [sockId, info] of connectedUsers.entries()) {
           if (info.userId === messageData.targetUserId && !info.isSupport) {
+            foundUser = true;
+            console.log(`Relaying admin message to user socket: ${sockId}, userId: ${info.userId}`);
             io.to(sockId).emit('receive-message', message);
           }
+        }
+        if (!foundUser) {
+          console.warn(`No user socket found for targetUserId: ${messageData.targetUserId}`);
         }
       }
       // If user sends a message, emit to all support agents and to self only (not all clients)

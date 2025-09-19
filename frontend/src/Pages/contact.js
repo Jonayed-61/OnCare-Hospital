@@ -160,7 +160,9 @@ const ContactPage = () => {
                 userName: 'Guest User',
                 message: newMessage.trim(),
                 isSupport: false,
-                timestamp: new Date()
+                timestamp: new Date(),
+                senderId: userId,
+                senderName: 'Guest User'
             };
             socketRef.current.emit('send-message', messageData);
             setNewMessage('');
