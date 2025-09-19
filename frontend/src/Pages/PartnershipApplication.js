@@ -582,4 +582,3 @@ const PartnershipApplicationPage = () => {
 };
 
 export default PartnershipApplicationPage;
-//here is the code, update this
