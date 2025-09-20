@@ -25,6 +25,9 @@ const DoctorsPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedDoctor, setExpandedDoctor] = useState(null);
     const [isMobile, setIsMobile] = useState(false);
+    const [doctors, setDoctors] = useState([]); // <-- fetch from backend
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         AOS.init({
@@ -33,16 +36,30 @@ const DoctorsPage = () => {
             once: true,
             mirror: false
         });
-
-        // Check if mobile on initial load
         checkIsMobile();
-
-        // Add resize listener
         window.addEventListener('resize', checkIsMobile);
+        return () => window.removeEventListener('resize', checkIsMobile);
+    }, []);
 
-        return () => {
-            window.removeEventListener('resize', checkIsMobile);
+    useEffect(() => {
+        // Fetch doctors from backend
+        const fetchDoctors = async () => {
+            setLoading(true);
+            setError('');
+            try {
+                const response = await fetch('http://localhost:5000/api/doctors');
+                const data = await response.json();
+                if (data.success) {
+                    setDoctors(data.doctors);
+                } else {
+                    setError(data.message || 'Failed to fetch doctors');
+                }
+            } catch (err) {
+                setError('Failed to fetch doctors');
+            }
+            setLoading(false);
         };
+        fetchDoctors();
     }, []);
 
         // Check login status
@@ -75,111 +92,6 @@ const DoctorsPage = () => {
         }
     };
 
-    const doctors = [
-        {
-            id: 1,
-            name: "Dr. Ayesha Rahman",
-            specialty: "Cardiologist",
-            experience: "12 years",
-            rating: 4.8,
-            reviews: 156,
-            image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            availability: "Mon, Wed, Fri",
-            location: "Apollo Hospitals, Dhaka",
-            education: "FCPS, Dhaka Medical College",
-            languages: ["Bengali", "English"],
-            isAvailable: true,
-            about: "Dr. Ayesha Rahman is a renowned cardiologist with over 12 years of experience in treating complex heart conditions. She has performed over 500 successful surgeries and is known for her compassionate patient care.",
-            services: ["Echocardiography", "Angioplasty", "Cardiac Consultation", "Pacemaker Implantation"],
-            achievements: ["Best Cardiologist Award 2022", "Published 25+ Research Papers", "Member of Bangladesh Cardiac Society"]
-        },
-        {
-            id: 2,
-            name: "Dr. Mohammad Hasan",
-            specialty: "Neurologist",
-            experience: "15 years",
-            rating: 4.7,
-            reviews: 132,
-            image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            availability: "Tue, Thu, Sat",
-            location: "Square Hospital, Dhaka",
-            education: "MD, BSMMU",
-            languages: ["Bengali", "English", "Hindi"],
-            isAvailable: true,
-            about: "Dr. Mohammad Hasan is a leading neurologist specializing in the treatment of brain and nervous system disorders. He has extensive experience in managing stroke, epilepsy, and neurodegenerative diseases.",
-            services: ["EEG", "EMG", "Neurological Consultation", "Stroke Management"],
-            achievements: ["Neurology Excellence Award 2021", "International Research Fellow", "Founder of NeuroCare Bangladesh"]
-        },
-        {
-            id: 3,
-            name: "Dr. Fatima Begum",
-            specialty: "Pediatrician",
-            experience: "10 years",
-            rating: 4.9,
-            reviews: 187,
-            image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            availability: "Mon-Fri",
-            location: "Child Health Care, Chittagong",
-            education: "MBBS, MCPS, Chittagong Medical College",
-            languages: ["Bengali", "English"],
-            isAvailable: true,
-            about: "Dr. Fatima Begum is a compassionate pediatrician dedicated to providing comprehensive healthcare for children from newborns to adolescents. She believes in preventive care and parent education.",
-            services: ["Child Vaccination", "Growth Monitoring", "Nutrition Counseling", "Developmental Assessment"],
-            achievements: ["Pediatric Care Excellence Award", "Child Health Advocate", "15+ Years of Service"]
-        },
-        {
-            id: 4,
-            name: "Dr. Rajib Ahmed",
-            specialty: "Orthopedic Surgeon",
-            experience: "14 years",
-            rating: 4.6,
-            reviews: 98,
-            image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            availability: "Mon, Tue, Thu",
-            location: "Labaid Specialized Hospital, Dhaka",
-            education: "MS (Ortho), Dhaka Medical College",
-            languages: ["Bengali", "English"],
-            isAvailable: false,
-            about: "Dr. Rajib Ahmed is a skilled orthopedic surgeon specializing in joint replacement, sports injuries, and fracture management. He has successfully performed over 1000 surgeries with excellent outcomes.",
-            services: ["Joint Replacement", "Arthroscopy", "Fracture Management", "Sports Injury Treatment"],
-            achievements: ["Best Orthopedic Surgeon 2020", "Advanced Training in Germany", "Pioneer in Minimally Invasive Surgery"]
-        },
-        {
-            id: 5,
-            name: "Dr. Tahmina Akhter",
-            specialty: "Dermatologist",
-            experience: "8 years",
-            rating: 4.8,
-            reviews: 112,
-            image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            availability: "Wed, Fri, Sat",
-            location: "Skin Care Center, Sylhet",
-            education: "DDV, BSMMU",
-            languages: ["Bengali", "English", "Arabic"],
-            isAvailable: true,
-            about: "Dr. Tahmina Akhter is a dermatologist with expertise in medical, surgical, and cosmetic dermatology. She provides personalized treatment plans for various skin conditions.",
-            services: ["Acne Treatment", "Skin Cancer Screening", "Cosmetic Procedures", "Laser Therapy"],
-            achievements: ["Dermatology Innovation Award", "International Conference Speaker", "Advanced Laser Certification"]
-        },
-        {
-            id: 6,
-            name: "Dr. Sajal Kumar",
-            specialty: "General Physician",
-            experience: "16 years",
-            rating: 4.7,
-            reviews: 204,
-            image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80",
-            availability: "Mon-Thu",
-            location: "Popular Diagnostic Centre, Dhaka",
-            education: "MBBS, FCPS, Dhaka University",
-            languages: ["Bengali", "English", "Hindi"],
-            isAvailable: true,
-            about: "Dr. Sajal Kumar is an experienced general physician providing comprehensive primary care for adults. He focuses on preventive medicine and managing chronic conditions.",
-            services: ["Health Check-ups", "Chronic Disease Management", "Preventive Care", "Vaccinations"],
-            achievements: ["Primary Care Excellence Award", "Community Health Leader", "20+ Years of Service"]
-        },
-    ];
-
     const specialties = [
         'All Specialties',
         'Cardiologist',
@@ -201,12 +113,20 @@ const DoctorsPage = () => {
 
     const filteredDoctors = doctors.filter(doctor => {
         const matchesFilter = activeFilter === 'all' ||
-            doctor.specialty.toLowerCase().includes(activeFilter.toLowerCase());
-        const matchesSearch = doctor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            doctor.specialty.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            doctor.location.toLowerCase().includes(searchQuery.toLowerCase());
+            (doctor.specialty && doctor.specialty.toLowerCase().includes(activeFilter.toLowerCase()));
+        const matchesSearch = (doctor.name && doctor.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (doctor.specialty && doctor.specialty.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (doctor.location && doctor.location.toLowerCase().includes(searchQuery.toLowerCase()));
         return matchesFilter && matchesSearch;
     });
+
+    if (loading) {
+        return <div className="doctors-page"><Navbar /><div className="doctors-container">Loading doctors...</div></div>;
+    }
+
+    if (error) {
+        return <div className="doctors-page"><Navbar /><div className="doctors-container">{error}</div></div>;
+    }
 
     return (
         <div className="doctors-page font-sans bg-gray-50 relative overflow-hidden">
