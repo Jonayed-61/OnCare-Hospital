@@ -34,6 +34,7 @@ import {
 import '../Styles/adminDashboard.css';
 
 const socket = io('http://localhost:5000');
+const API_BASE_URL = 'http://localhost:5000/api';
 
 function LiveChatPanel({ isOpen, onClose }) {
   const [messages, setMessages] = useState([]);
@@ -52,9 +53,9 @@ function LiveChatPanel({ isOpen, onClose }) {
         setSelectedUserId(users[0].userId);
       }
     });
-    
+
     socket.emit("join-support", { agentId: "admin_1", agentName: "Admin" });
-    
+
     return () => {
       socket.off("receive-message");
       socket.off("users-list");
@@ -188,6 +189,7 @@ export default function AdminDashboard() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem('adminAuthenticated');
@@ -217,50 +219,103 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     setIsLoading(true);
+    setError(null);
     try {
-      const doctorsResponse = await fetch('http://localhost:5000/api/admin/pending-doctors');
-      if (!doctorsResponse.ok) throw new Error('Failed to fetch pending doctors');
+      const token = localStorage.getItem('adminToken');
+      
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      // Fetch pending doctors - FIXED ENDPOINT
+      const doctorsResponse = await fetch(`${API_BASE_URL}/admin/pending-doctors`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!doctorsResponse.ok) {
+        const errorData = await doctorsResponse.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${doctorsResponse.status}`);
+      }
+
       const doctorsData = await doctorsResponse.json();
-      setPendingDoctors(Array.isArray(doctorsData) ? doctorsData : []);
+      
+      // Handle both response formats (array or object with doctors property)
+      const doctorsArray = Array.isArray(doctorsData) ? doctorsData : 
+                          (doctorsData.doctors || doctorsData.data || []);
+      
+      setPendingDoctors(doctorsArray);
 
-      const usersResponse = await fetch('http://localhost:5000/api/admin/users');
-      if (!usersResponse.ok) throw new Error('Failed to fetch users');
-      const usersData = await usersResponse.json();
-      setUsers(Array.isArray(usersData) ? usersData : []);
+      // Update stats with actual count
+      setStats(prev => ({
+        ...prev,
+        pendingApprovals: doctorsArray.length
+      }));
 
-      const appointmentsResponse = await fetch('http://localhost:5000/api/admin/appointments');
+      // Fetch users
+      const usersResponse = await fetch(`${API_BASE_URL}/admin/users`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (usersResponse.ok) {
+        const usersData = await usersResponse.json();
+        setUsers(Array.isArray(usersData) ? usersData : []);
+      } else {
+        console.error('Failed to fetch users:', usersResponse.status);
+        setUsers([]);
+      }
+
+      const appointmentsResponse = await fetch(`${API_BASE_URL}/admin/appointments`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       if (!appointmentsResponse.ok) throw new Error('Failed to fetch appointments');
       const appointmentsData = await appointmentsResponse.json();
       setAppointments(Array.isArray(appointmentsData) ? appointmentsData : []);
 
-      const servicesResponse = await fetch('http://localhost:5000/api/admin/services');
+      const servicesResponse = await fetch(`${API_BASE_URL}/admin/services`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       if (!servicesResponse.ok) throw new Error('Failed to fetch services');
       const servicesData = await servicesResponse.json();
       setServices(Array.isArray(servicesData) ? servicesData : []);
 
-      const blogResponse = await fetch('http://localhost:5000/api/admin/blog-posts');
+      const blogResponse = await fetch(`${API_BASE_URL}/admin/blog-posts`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       if (!blogResponse.ok) throw new Error('Failed to fetch blog posts');
       const blogData = await blogResponse.json();
       setBlogPosts(Array.isArray(blogData) ? blogData : []);
 
-      const statsResponse = await fetch('http://localhost:5000/api/admin/stats');
+      const statsResponse = await fetch(`${API_BASE_URL}/admin/stats`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       if (statsResponse.ok) {
         const statsData = await statsResponse.json();
         setStats(prev => ({ ...prev, ...statsData }));
       }
-      
-      setStats(prev => ({
-        ...prev,
-        pendingApprovals: Array.isArray(doctorsData) ? doctorsData.length : 0
-      }));
 
     } catch (error) {
       console.error('Error fetching data:', error);
-      setAppointments([]);
-      setUsers([]);
-      setServices([]);
-      setBlogPosts([]);
-      setPendingDoctors([]);
+      setError(error.message);
+      
+      // Handle specific errors
+      if (error.message.includes('401') || error.message.includes('token')) {
+        localStorage.removeItem('adminAuthenticated');
+        localStorage.removeItem('adminToken');
+        navigate('/admin-login');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -268,6 +323,7 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem('adminAuthenticated');
+    localStorage.removeItem('adminToken');
     socket.disconnect();
     navigate('/admin-login');
   };
@@ -284,10 +340,12 @@ export default function AdminDashboard() {
 
   const handleApproveDoctor = async (doctorId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/approve-doctor/${doctorId}`, {
-        method: 'PUT',
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/admin/approve-doctor/${doctorId}`, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
       });
 
@@ -296,18 +354,25 @@ export default function AdminDashboard() {
         setStats(prev => ({ ...prev, pendingApprovals: prev.pendingApprovals - 1 }));
         alert('Doctor approved successfully!');
       } else {
-        alert('Failed to approve doctor');
+        const errorData = await response.json();
+        alert(errorData.message || 'Failed to approve doctor');
       }
     } catch (error) {
       console.error('Error approving doctor:', error);
-      alert('Error approving doctor');
+      alert('Error approving doctor: ' + error.message);
     }
   };
 
   const handleRejectDoctor = async (doctorId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/reject-doctor/${doctorId}`, {
-        method: 'DELETE',
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${API_BASE_URL}/admin/reject-doctor/${doctorId}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ reason: 'Rejected by admin' })
       });
 
       if (response.ok) {
@@ -315,16 +380,48 @@ export default function AdminDashboard() {
         setStats(prev => ({ ...prev, pendingApprovals: prev.pendingApprovals - 1 }));
         alert('Doctor rejected successfully!');
       } else {
-        alert('Failed to reject doctor');
+        const errorData = await response.json();
+        alert(errorData.message || 'Failed to reject doctor');
       }
     } catch (error) {
       console.error('Error rejecting doctor:', error);
-      alert('Error rejecting doctor');
+      alert('Error rejecting doctor: ' + error.message);
     }
   };
 
   const handleViewDoctor = (doctor) => {
     openModal({ type: 'viewDoctor', data: doctor });
+  };
+
+  const handleViewUser = (user) => {
+    openModal({ type: 'viewUser', data: user });
+  };
+
+  const handleEditUser = (user) => {
+    openModal({ type: 'editUser', data: user });
+  };
+
+  const handleDeleteUser = async (userId) => {
+    if (window.confirm('Are you sure you want to delete this user?')) {
+      try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (response.ok) {
+          setUsers(users.filter(user => user._id !== userId));
+          alert('User deleted successfully');
+        } else {
+          alert('Failed to delete user');
+        }
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        alert('Error deleting user');
+      }
+    }
   };
 
   const renderSection = () => {
@@ -339,26 +436,9 @@ export default function AdminDashboard() {
         return <UserManagement 
           users={users} 
           onAddUser={() => openModal('user')} 
-          onEditUser={(user) => openModal({ type: 'editUser', data: user })} 
-          onViewUser={(user) => openModal({ type: 'viewUser', data: user })} 
-          onDeleteUser={async (userId) => {
-            if (window.confirm('Are you sure you want to delete this user?')) {
-              try {
-                const response = await fetch(`http://localhost:5000/api/admin/users/${userId}`, {
-                  method: 'DELETE'
-                });
-                if (response.ok) {
-                  setUsers(users.filter(user => user._id !== userId));
-                  alert('User deleted successfully');
-                } else {
-                  alert('Failed to delete user');
-                }
-              } catch (error) {
-                console.error('Error deleting user:', error);
-                alert('Error deleting user');
-              }
-            }
-          }}
+          onEditUser={handleEditUser} 
+          onViewUser={handleViewUser} 
+          onDeleteUser={handleDeleteUser} 
           searchTerm={searchTerm}
         />;
       case 'appointments':
@@ -370,8 +450,12 @@ export default function AdminDashboard() {
           onDeleteAppointment={async (apptId) => {
             if (window.confirm('Are you sure you want to delete this appointment?')) {
               try {
-                const response = await fetch(`http://localhost:5000/api/admin/appointments/${apptId}`, {
-                  method: 'DELETE'
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${API_BASE_URL}/admin/appointments/${apptId}`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Authorization': `Bearer ${token}`
+                  }
                 });
                 if (response.ok) {
                   setAppointments(appointments.filter(appt => appt._id !== apptId));
@@ -395,8 +479,12 @@ export default function AdminDashboard() {
           onDeleteService={async (serviceId) => {
             if (window.confirm('Are you sure you want to delete this service?')) {
               try {
-                const response = await fetch(`http://localhost:5000/api/admin/services/${serviceId}`, {
-                  method: 'DELETE'
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${API_BASE_URL}/admin/services/${serviceId}`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Authorization': `Bearer ${token}`
+                  }
                 });
                 if (response.ok) {
                   setServices(services.filter(service => service._id !== serviceId));
@@ -419,8 +507,12 @@ export default function AdminDashboard() {
           onDeletePost={async (postId) => {
             if (window.confirm('Are you sure you want to delete this blog post?')) {
               try {
-                const response = await fetch(`http://localhost:5000/api/admin/blog-posts/${postId}`, {
-                  method: 'DELETE'
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${API_BASE_URL}/admin/blog-posts/${postId}`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Authorization': `Bearer ${token}`
+                  }
                 });
                 if (response.ok) {
                   setBlogPosts(blogPosts.filter(post => post._id !== postId));
@@ -457,6 +549,17 @@ export default function AdminDashboard() {
       <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} onLogout={handleLogout} />
       <div className="admin-content">
         <Header searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        
+        {/* Error Display */}
+        {error && (
+          <div className="error-banner">
+            <FaExclamationTriangle />
+            <span>Error: {error}</span>
+            <button onClick={fetchData}>Retry</button>
+            <button onClick={() => setError(null)}>Dismiss</button>
+          </div>
+        )}
+        
         {renderSection()}
         <FloatingChatButton 
           onClick={() => {
@@ -798,9 +901,9 @@ function DoctorApprovalManagement({ pendingDoctors, onApproveDoctor, onRejectDoc
 function UserManagement({ users, onAddUser, onEditUser, onViewUser, onDeleteUser, searchTerm }) {
   const safeUsers = Array.isArray(users) ? users : [];
   const filteredUsers = safeUsers.filter(user => 
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.role.toLowerCase().includes(searchTerm.toLowerCase())
+    (user.name && user.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (user.email && user.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+    (user.role && user.role.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   return (
@@ -818,6 +921,7 @@ function UserManagement({ users, onAddUser, onEditUser, onViewUser, onDeleteUser
             <tr>
               <th>Name</th>
               <th>Email</th>
+              <th>Phone</th>
               <th>Role</th>
               <th>Status</th>
               <th>Join Date</th>
@@ -830,26 +934,27 @@ function UserManagement({ users, onAddUser, onEditUser, onViewUser, onDeleteUser
                 <td>
                   <div className="user-info">
                     <div className="user-avatar">
-                      {user.name.charAt(0)}
+                      {user.name ? user.name.charAt(0) : 'U'}
                     </div>
                     <div className="user-details">
-                      <div className="user-name">{user.name}</div>
-                      <div className="user-phone">{user.phone}</div>
+                      <div className="user-name">{user.name || 'No Name'}</div>
+                      <div className="user-id">ID: {user._id?.substring(0, 8)}...</div>
                     </div>
                   </div>
                 </td>
-                <td>{user.email}</td>
+                <td>{user.email || 'No Email'}</td>
+                <td>{user.phone || 'No Phone'}</td>
                 <td>
-                  <span className={`role-badge ${user.role}`}>
-                    {user.role}
+                  <span className={`role-badge ${user.role || 'user'}`}>
+                    {user.role || 'user'}
                   </span>
                 </td>
                 <td>
-                  <span className={`status-badge ${user.status}`}>
-                    {user.status}
+                  <span className={`status-badge ${user.status || 'active'}`}>
+                    {user.status || 'active'}
                   </span>
                 </td>
-                <td>{new Date(user.joinDate).toLocaleDateString()}</td>
+                <td>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Unknown'}</td>
                 <td>
                   <div className="action-buttons">
                     <button 
@@ -1280,10 +1385,11 @@ function Modal({ content, onClose, onSave }) {
 
   const renderContent = () => {
     if (!content) return null;
-    
+    let doctor, user;
+
     switch(content.type) {
       case 'viewDoctor':
-        const doctor = content.data;
+        doctor = content.data;
         return (
           <div className="modal-view-doctor">
             <h2>Doctor Details</h2>
@@ -1310,18 +1416,17 @@ function Modal({ content, onClose, onSave }) {
               </div>
               <div className="detail-row">
                 <label>Languages:</label>
-                <span>{doctor.languages?.join(', ')}</span>
+                <span>{Array.isArray(doctor.languages) ? doctor.languages.join(', ') : doctor.languages}</span>
               </div>
               <div className="detail-row">
                 <label>Applied On:</label>
-                <span>{new Date(doctor.createdAt).toLocaleDateString()}</span>
+                <span>{doctor.createdAt ? new Date(doctor.createdAt).toLocaleDateString() : ''}</span>
               </div>
             </div>
           </div>
         );
-      
       case 'viewUser':
-        const user = content.data;
+        user = content.data;
         return (
           <div className="modal-view-user">
             <h2>User Details</h2>
@@ -1348,12 +1453,11 @@ function Modal({ content, onClose, onSave }) {
               </div>
               <div className="detail-row">
                 <label>Join Date:</label>
-                <span>{new Date(user.joinDate).toLocaleDateString()}</span>
+                <span>{user.createdAt ? new Date(user.createdAt).toLocaleDateString() : ''}</span>
               </div>
             </div>
           </div>
         );
-      
       default:
         return (
           <div className="modal-default">

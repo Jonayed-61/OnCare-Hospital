@@ -60,45 +60,51 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// User login route
+// User login route (ADD THIS - THIS IS WHAT'S MISSING!)
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user by email
+    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Compare password
-    const isMatch = await bcrypt.compare(password, user.password);
+    // Check password
+    const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, message: 'Invalid email or password' });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: user._id, email: user.email, userType: user.userType },
-      process.env.JWT_SECRET || 'yoursecretkey',
-      { expiresIn: '7d' }
-    );
+    // Create JWT token
+    const payload = {
+      userId: user.id,
+      userType: user.userType
+    };
 
-    res.json({
-      success: true,
-      message: 'Login successful',
-      token,
-      user: {
-        id: user._id,
-        email: user.email,
-        userType: user.userType,
-        firstName: user.firstName,
-        lastName: user.lastName
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET || 'your_jwt_secret',
+      { expiresIn: '7d' },
+      (err, token) => {
+        if (err) throw err;
+        res.json({
+          message: 'Login successful',
+          token,
+          user: {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            userType: user.userType
+          }
+        });
       }
-    });
+    );
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    res.status(500).json({ message: 'Server error during login' });
   }
 });
 

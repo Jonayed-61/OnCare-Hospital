@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Admin = require('../models/admin');
 const Doctor = require('../models/Doctor');
+const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -39,9 +40,102 @@ function adminAuth(req, res, next) {
   }
 }
 
+// Get all pending doctor applications - ENHANCED WITH ERROR HANDLING
+router.get('/pending-doctors', adminAuth, async (req, res) => {
+  try {
+    console.log('Fetching pending doctors...');
+    const pendingDoctors = await Doctor.find({ status: 'pending' })
+      .select('-password')
+      .sort({ createdAt: -1 });
+    
+    console.log(`Found ${pendingDoctors.length} pending doctors`);
+    res.json({
+      success: true,
+      doctors: pendingDoctors,
+      count: pendingDoctors.length
+    });
+  } catch (err) {
+    console.error('Error fetching pending doctors:', err);
+    res.status(500).json({ 
+      success: false,
+      message: 'Server error fetching pending doctors',
+      error: err.message 
+    });
+  }
+});
+
+// ... rest of your admin.js routes remain the same ...
+// [KEEP ALL YOUR EXISTING ROUTES BELOW THIS LINE]
+
 // Example protected admin route
 router.get('/dashboard', adminAuth, (req, res) => {
   res.json({ message: 'Welcome to the admin dashboard!' });
+});
+
+// Get all users
+router.get('/users', adminAuth, async (req, res) => {
+  try {
+    const users = await User.find()
+      .select('-password') // Exclude password
+      .sort({ createdAt: -1 }); // Newest first
+    
+    res.json(users);
+  } catch (err) {
+    console.error('Error fetching users:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get user by ID
+router.get('/users/:id', adminAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update user
+router.put('/users/:id', adminAuth, async (req, res) => {
+  try {
+    const { name, email, phone, role, status } = req.body;
+    
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+    if (role) user.role = role;
+    if (status) user.status = status;
+    
+    await user.save();
+    
+    const userResponse = user.toObject();
+    delete userResponse.password;
+    
+    res.json({ 
+      message: 'User updated successfully',
+      user: userResponse
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Delete user
+router.delete('/users/:id', adminAuth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // Get all pending doctor applications
@@ -141,6 +235,7 @@ router.get('/stats', adminAuth, async (req, res) => {
     const pendingDoctors = await Doctor.countDocuments({ status: 'pending' });
     const approvedDoctors = await Doctor.countDocuments({ status: 'approved' });
     const rejectedDoctors = await Doctor.countDocuments({ status: 'rejected' });
+    const totalUsers = await User.countDocuments();
     
     // Get recent approved doctors (last 7 days)
     const oneWeekAgo = new Date();
@@ -156,6 +251,7 @@ router.get('/stats', adminAuth, async (req, res) => {
       pendingDoctors,
       approvedDoctors,
       rejectedDoctors,
+      totalUsers,
       recentApprovals
     });
   } catch (err) {
