@@ -10,6 +10,7 @@ const authRoutes = require('./routes/auth');
 const careersRoutes = require('./routes/careers');
 const partnerRoutes = require('./routes/partners');
 const adminRoutes = require('./routes/admin');
+const doctorsRoutes = require('./routes/doctors');
 
 const app = express();
 const server = http.createServer(app);
@@ -193,6 +194,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/careers', careersRoutes);
 app.use('/api/partners', partnerRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/doctors', doctorsRoutes);
 
 // Basic health check route
 app.get('/api/health', (req, res) => {

@@ -6,7 +6,7 @@
 }
 
 .registration-container {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 100px 20px 50px;
 }
@@ -48,6 +48,16 @@
   color: #1a244f;
   margin-bottom: 25px;
   font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.form-section h2::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #eee;
+  margin-left: 15px;
 }
 
 .form-group {
@@ -81,13 +91,14 @@
   border: 2px solid #e1e5eb;
   border-radius: 8px;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .input-with-icon input:focus,
 .input-with-icon select:focus {
   outline: none;
   border-color: #4a6cf7;
+  box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
 }
 
 textarea {
@@ -99,12 +110,19 @@ textarea {
   font-family: inherit;
   resize: vertical;
   min-height: 100px;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 textarea:focus {
   outline: none;
   border-color: #4a6cf7;
+  box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 
 .file-upload {
@@ -142,7 +160,9 @@ textarea:focus {
 
 .form-submit {
   text-align: center;
-  margin-top: 30px;
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid #eee;
 }
 
 .submit-application-btn {
@@ -154,18 +174,26 @@ textarea:focus {
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(74, 108, 247, 0.2);
 }
 
-.submit-application-btn:hover {
+.submit-application-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(74, 108, 247, 0.3);
+  box-shadow: 0 7px 14px rgba(74, 108, 247, 0.3);
+}
+
+.submit-application-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .form-note {
   margin-top: 15px;
   color: #666;
   font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .registration-success {
@@ -193,6 +221,9 @@ textarea:focus {
   margin-bottom: 30px;
   font-size: 1.1rem;
   line-height: 1.6;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .back-to-doctors-btn {
@@ -205,17 +236,67 @@ textarea:focus {
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(74, 108, 247, 0.2);
 }
 
 .back-to-doctors-btn:hover {
   background: #3b5be3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(74, 108, 247, 0.3);
 }
 
 .back-to-doctors-btn svg {
   margin-right: 8px;
 }
 
+.error-message {
+  background: #fee;
+  color: #c33;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 25px;
+  border-left: 4px solid #c33;
+  font-weight: 500;
+}
+
+/* Password strength indicator */
+.password-strength {
+  margin-top: 8px;
+  height: 5px;
+  border-radius: 3px;
+  background: #eee;
+  overflow: hidden;
+}
+
+.password-strength-fill {
+  height: 100%;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.password-strength.weak .password-strength-fill {
+  width: 33%;
+  background: #ff4757;
+}
+
+.password-strength.medium .password-strength-fill {
+  width: 66%;
+  background: #ffa502;
+}
+
+.password-strength.strong .password-strength-fill {
+  width: 100%;
+  background: #2ed573;
+}
+
+.password-strength-text {
+  font-size: 0.8rem;
+  margin-top: 5px;
+  text-align: right;
+  color: #666;
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .registration-container {
     padding: 80px 15px 30px;
@@ -231,5 +312,650 @@ textarea:focus {
   
   .form-section h2 {
     font-size: 1.3rem;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .input-with-icon input,
+  .input-with-icon select {
+    padding: 12px 15px 12px 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .registration-success {
+    padding: 40px 20px;
+  }
+  
+  .registration-success h2 {
+    font-size: 1.6rem;
+  }
+  
+  .submit-application-btn {
+    padding: 12px 30px;
+    font-size: 1rem;
+  }
+}
+/* Array input styles */
+.array-input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.array-input-group .input-with-icon {
+  flex: 1;
+}
+
+.add-item-btn {
+  background: #4a6cf7;
+  color: white;
+  border: none;
+  padding: 0 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.add-item-btn:hover {
+  background: #3b5be3;
+}
+
+.items-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.item-tag {
+  display: inline-flex;
+  align-items: center;
+  background: #f0f4ff;
+  color: #4a6cf7;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.item-tag button {
+  background: none;
+  border: none;
+  color: #4a6cf7;
+  margin-left: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.item-tag button:hover {
+  color: #ff4757;
+}
+/* Doctor Registration Styles */
+.doctor-registration-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+  padding-bottom: 2rem;
+}
+
+.registration-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  padding-top: 6rem;
+}
+
+.registration-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.registration-header h1 {
+  font-size: 2.5rem;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+}
+
+.registration-header p {
+  color: #718096;
+  font-size: 1.1rem;
+}
+
+.registration-form {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.form-section {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+}
+
+.form-section h2 {
+  font-size: 1.5rem;
+  color: #4a5568;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #4a6cf7;
+  display: inline-block;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon svg {
+  position: absolute;
+  left: 12px;
+  color: #a0aec0;
+  z-index: 1;
+}
+
+.input-with-icon input,
+.input-with-icon select,
+.input-with-icon textarea {
+  width: 100%;
+  padding: 12px 12px 12px 40px;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.input-with-icon textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+.input-with-icon input:focus,
+.input-with-icon select:focus,
+.input-with-icon textarea:focus {
+  outline: none;
+  border-color: #4a6cf7;
+  box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+}
+
+/* Array input styles */
+.array-input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.array-input-group .input-with-icon {
+  flex: 1;
+}
+
+.add-item-btn {
+  background: #4a6cf7;
+  color: white;
+  border: none;
+  padding: 0 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  height: 44px;
+  transition: background 0.3s ease;
+}
+
+.add-item-btn:hover {
+  background: #3b5be3;
+}
+
+.items-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.item-tag {
+  display: inline-flex;
+  align-items: center;
+  background: #f0f4ff;
+  color: #4a6cf7;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.item-tag button {
+  background: none;
+  border: none;
+  color: #4a6cf7;
+  margin-left: 5px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-tag button:hover {
+  color: #ff4757;
+}
+
+.form-submit {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.submit-application-btn {
+  background: linear-gradient(135deg, #4a6cf7 0%, #3b5be3 100%);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-application-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(74, 108, 247, 0.3);
+}
+
+.submit-application-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.form-note {
+  margin-top: 1rem;
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+.error-message {
+  background: #fed7d7;
+  color: #c53030;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.registration-success {
+  text-align: center;
+  background: white;
+  padding: 3rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+.success-icon {
+  font-size: 4rem;
+  color: #48bb78;
+  margin-bottom: 1.5rem;
+}
+
+.registration-success h2 {
+  font-size: 2rem;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.registration-success p {
+  color: #718096;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.back-to-doctors-btn {
+  background: #4a6cf7;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.back-to-doctors-btn:hover {
+  background: #3b5be3;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .registration-container {
+    padding: 1rem;
+    padding-top: 5rem;
+  }
+  
+  .registration-form {
+    padding: 1.5rem;
+  }
+  
+  .array-input-group {
+    flex-direction: column;
+  }
+  
+  .add-item-btn {
+    width: 100%;
+  }
+}
+/* Add these styles to your existing registration.css */
+
+.field-error {
+  display: flex;
+  align-items: center;
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.field-error svg {
+  margin-right: 0.5rem;
+}
+
+.input-with-icon input.error,
+.input-with-icon select.error,
+textarea.error {
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
+
+.photo-upload-container .field-error {
+  margin-top: 0.5rem;
+}
+
+.items-list {
+  margin-top: 0.5rem;
+}
+
+.item-tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  margin: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.item-tag button {
+  background: none;
+  border: none;
+  color: #2e7d32;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.item-tag button:hover {
+  color: #e74c3c;
+}
+
+.array-input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.add-item-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.add-item-btn:hover {
+  background-color: #3d8b40;
+}
+
+.photo-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.photo-preview {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #888;
+}
+
+.photo-placeholder svg {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.photo-upload-btn {
+  background-color: #2196f3;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.photo-upload-btn svg {
+  margin-right: 0.5rem;
+}
+
+.photo-upload-btn:hover {
+  background-color: #0b7dda;
+}
+
+.file-name {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+.input-hint {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+.field-error {
+  display: flex;
+  align-items: center;
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.field-error svg {
+  margin-right: 0.5rem;
+}
+
+.input-with-icon input.error,
+.input-with-icon select.error,
+textarea.error {
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
+
+.items-list {
+  margin-top: 0.5rem;
+}
+
+.item-tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  margin: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.item-tag button {
+  background: none;
+  border: none;
+  color: #2e7d32;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.item-tag button:hover {
+  color: #e74c3c;
+}
+
+.array-input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.add-item-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.add-item-btn:hover {
+  background-color: #3d8b40;
+}
+/* Add these styles to your existing registration.css file */
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  z-index: 1;
+  color: #666;
+}
+
+.input-with-icon input,
+.input-with-icon select,
+.input-with-icon textarea {
+  padding-left: 40px !important;
+  width: 100%;
+}
+
+.array-input-group .input-with-icon input {
+  width: 100%;
+}
+
+/* Ensure proper spacing for all input types */
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Focus states */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #4CAF50;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* Error states */
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+  border-color: #f44336;
+}
+
+.field-error {
+  color: #f44336;
+  font-size: 14px;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .input-icon {
+    left: 10px;
+  }
+  
+  .input-with-icon input,
+  .input-with-icon select {
+    padding-left: 35px !important;
   }
 }

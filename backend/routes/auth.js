@@ -1,171 +1,120 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const Doctor = require('../models/doctor'); // Add Doctor model
-const multer = require('multer'); // Add multer for file uploads
-const path = require('path');
+const Doctor = require('../models/Doctor');
 const router = express.Router();
 
-// Configure multer for file uploads (add this after imports)
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
-
-const upload = multer({ storage: storage });
-
-// Your existing register endpoint remains the same
+// User registration route
 router.post('/register', async (req, res) => {
   try {
-    const { firstName, lastName, email, phone, password, confirmPassword, userType } = req.body;
-
-    // Validation
-    if (!firstName || !lastName || !email || !phone || !password || !userType) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
-
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: 'Passwords do not match' });
-    }
-
-    if (password.length < 8) {
-      return res.status(400).json({ message: 'Password must be at least 8 characters long' });
-    }
+    const { firstName, lastName, email, phone, password, userType } = req.body;
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
+    let user = await User.findOne({ email });
+    if (user) {
       return res.status(400).json({ message: 'User already exists with this email' });
     }
 
     // Create new user
-    const newUser = new User({
+    user = new User({
       firstName,
       lastName,
       email,
       phone,
       password,
-      userType
+      userType: userType || 'patient'
     });
 
     // Save user to database
-    const savedUser = await newUser.save();
+    await user.save();
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: savedUser._id },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    // Return user data (excluding password)
-    const userResponse = {
-      _id: savedUser._id,
-      firstName: savedUser.firstName,
-      lastName: savedUser.lastName,
-      email: savedUser.email,
-      phone: savedUser.phone,
-      userType: savedUser.userType,
-      createdAt: savedUser.createdAt
+    // Create JWT token
+    const payload = {
+      userId: user.id,
+      userType: user.userType
     };
 
-    res.status(201).json({
-      message: 'User created successfully',
-      user: userResponse,
-      token
-    });
-
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET || 'your_jwt_secret',
+      { expiresIn: '7d' },
+      (err, token) => {
+        if (err) throw err;
+        res.status(201).json({
+          message: 'Registration successful',
+          token,
+          user: {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            userType: user.userType
+          }
+        });
+      }
+    );
   } catch (error) {
     console.error('Registration error:', error);
-    
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({ message: errors.join(', ') });
-    }
-    
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'Server error during registration' });
   }
 });
 
-// Your existing login endpoint remains the same
+// User login route (ADD THIS - THIS IS WHAT'S MISSING!)
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validation
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
-    }
-
-    // Check if credentials match an admin
-    const Admin = require('../models/admin');
-    const bcrypt = require('bcryptjs');
-    const admin = await Admin.findOne({ email });
-    if (admin && await bcrypt.compare(password, admin.password)) {
-      const token = jwt.sign({ id: admin._id, role: admin.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
-      return res.json({
-        message: 'Login successful',
-        user: {
-          id: admin._id,
-          email: admin.email,
-          role: admin.role ? admin.role.toLowerCase() : 'admin',
-          phone: admin.phone
-        },
-        token
-      });
-    }
-
-    // Find user
+    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     // Check password
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    // Generate JWT token
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    // Return user data (excluding password)
-    const userResponse = {
-      _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phone: user.phone,
-      userType: user.userType,
-      createdAt: user.createdAt
+    // Create JWT token
+    const payload = {
+      userId: user.id,
+      userType: user.userType
     };
 
-    res.json({
-      message: 'Login successful',
-      user: userResponse,
-      token
-    });
-
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET || 'your_jwt_secret',
+      { expiresIn: '7d' },
+      (err, token) => {
+        if (err) throw err;
+        res.json({
+          message: 'Login successful',
+          token,
+          user: {
+            id: user._id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            userType: user.userType
+          }
+        });
+      }
+    );
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: 'Server error during login' });
   }
 });
 
-// Add doctor registration endpoint (new endpoint)
-router.post('/doctor-register', upload.single('image'), async (req, res) => {
+// Doctor registration route (keep your existing code)
+router.post('/doctor-register', async (req, res) => {
   try {
     const {
       name,
+      email,
+      password,
       specialty,
       experience,
       education,
@@ -174,46 +123,71 @@ router.post('/doctor-register', upload.single('image'), async (req, res) => {
       languages,
       about,
       services,
-      achievements
+      achievements,
+      phone,
+      consultationFee
     } = req.body;
 
-    // Validation
-    if (!name || !specialty || !experience || !education || !location || !availability || !languages || !about || !services) {
-      return res.status(400).json({ message: 'All required fields must be filled' });
+    // Check if doctor already exists
+    let doctor = await Doctor.findOne({ email });
+    if (doctor) {
+      return res.status(400).json({ message: 'Doctor already exists with this email' });
     }
 
     // Create new doctor
-    const doctor = new Doctor({
+    doctor = new Doctor({
       name,
+      email,
+      password,
       specialty,
-      experience,
+      experience: parseInt(experience) || 0,
       education,
       location,
       availability,
-      languages: languages.split(',').map(lang => lang.trim()),
+      languages: Array.isArray(languages) ? languages : [],
       about,
-      services: services.split(',').map(service => service.trim()),
-      achievements: achievements ? achievements.split(',').map(ach => ach.trim()) : [],
-      image: req.file ? req.file.filename : null,
-      status: 'pending' // Set initial status as pending
+      services: Array.isArray(services) ? services : [],
+      achievements: Array.isArray(achievements) ? achievements : [],
+      phone,
+      consultationFee: parseInt(consultationFee) || 0
     });
 
-    // Save to database
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    doctor.password = await bcrypt.hash(password, salt);
+
+    // Save doctor to database
     await doctor.save();
 
-    res.status(201).json({ 
-      message: 'Application submitted successfully!', 
-      doctorId: doctor._id 
-    });
+    // Create JWT token
+    const payload = {
+      doctor: {
+        id: doctor.id,
+        role: 'doctor'
+      }
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET || 'your_jwt_secret',
+      { expiresIn: '7d' },
+      (err, token) => {
+        if (err) throw err;
+        res.status(201).json({
+          message: 'Doctor registration successful',
+          token,
+          doctor: {
+            id: doctor._id,
+            name: doctor.name,
+            email: doctor.email,
+            specialty: doctor.specialty
+          }
+        });
+      }
+    );
   } catch (error) {
     console.error('Doctor registration error:', error);
-    
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return res.status(400).json({ message: errors.join(', ') });
-    }
-    
-    res.status(500).json({ message: 'Failed to submit application' });
+    res.status(500).json({ message: 'Server error during registration' });
   }
 });
 

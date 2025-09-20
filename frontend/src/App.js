@@ -12,11 +12,9 @@ import RegistrationPage from './Pages/registration';
 import LoginPage from './Pages/login';
 import RegisterPage from './Pages/register';
 import ProfilePage from './Pages/profile';
-
 import PartnershipApplication from './Pages/PartnershipApplication';
 import AdminDashboard from './Pages/adminDashboard';
 import AdminLogin from './Pages/adminLogin';
-
 
 
 const router = createBrowserRouter([
@@ -68,6 +66,7 @@ const router = createBrowserRouter([
     path: "/register",
     element: <RegisterPage />,
   },
+  
   {
     path: "/partnershipapplication",
     element: <PartnershipApplication />,

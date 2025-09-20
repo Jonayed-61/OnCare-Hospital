@@ -305,7 +305,7 @@ const ContactPage = () => {
                                 <FaUser />
                             </div>
                             <div>
-                                <h3>MediSheba Support</h3>
+                                <h3>OnCare Hospital Support</h3>
                                 <div className={`chat-status ${chatConnected ? 'online' : 'offline'}`}>
                                     {chatConnected ? 'Online' : 'Offline'}
                                 </div>
@@ -322,7 +322,7 @@ const ContactPage = () => {
                                 <div className="welcome-avatar">
                                     <FaHeadset />
                                 </div>
-                                <h4>Welcome to MediSheba Support!</h4>
+                                <h4>Welcome to OnCare Hospital Support!</h4>
                                 <p>How can we help you today? Our team is here to assist you.</p>
                             </div>
                         ) : (
@@ -581,7 +581,7 @@ const ContactPage = () => {
                                 ></iframe>
                             </div>
                             <div className="map-details">
-                                <h3 className="map-details-title">MediSheba Headquarters</h3>
+                                <h3 className="map-details-title">OnCare Hospital Headquarters</h3>
                                 <p className="map-details-address">123 Medical Street, Rajshahi, Bangladesh</p>
                                 <div className="map-details-hours">
                                     <span className="font-semibold">Open:</span> Saturday - Thursday, 9:00 AM - 6:00 PM
