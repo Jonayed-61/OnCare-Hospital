@@ -132,19 +132,6 @@ export default function LoginPage() {
     setShowPassword(!showPassword);
   };
 
-  // Function to simulate checking if email exists (for demo purposes)
-  // In a real app, this would be an API call to your backend
-  const checkEmailExists = async (email) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/auth/check-email?email=${email}`);
-      const data = await response.json();
-      return data.exists;
-    } catch (error) {
-      console.error('Error checking email:', error);
-      return false;
-    }
-  };
-
   return (
     <div className="font-sans bg-gray-50 min-h-screen flex flex-col">
       <Navbar />

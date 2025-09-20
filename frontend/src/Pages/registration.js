@@ -278,7 +278,7 @@ const DoctorRegistration = () => {
             <div className="form-group">
               <label htmlFor="name">Full Name *</label>
               <div className="input-with-icon">
-                <FaUserMd />
+                <FaUserMd className="input-icon" />
                 <input
                   type="text"
                   id="name"
@@ -300,7 +300,7 @@ const DoctorRegistration = () => {
             <div className="form-group">
               <label htmlFor="email">Email Address *</label>
               <div className="input-with-icon">
-                <FaEnvelope />
+                <FaEnvelope className="input-icon" />
                 <input
                   type="email"
                   id="email"
@@ -322,7 +322,7 @@ const DoctorRegistration = () => {
             <div className="form-group">
               <label htmlFor="password">Password *</label>
               <div className="input-with-icon">
-                <FaLock />
+                <FaLock className="input-icon" />
                 <input
                   type="password"
                   id="password"
@@ -349,7 +349,7 @@ const DoctorRegistration = () => {
             <div className="form-group">
               <label htmlFor="specialty">Specialty *</label>
               <div className="input-with-icon">
-                <FaStethoscope />
+                <FaStethoscope className="input-icon" />
                 <select
                   id="specialty"
                   name="specialty"
@@ -380,7 +380,7 @@ const DoctorRegistration = () => {
             <div className="form-group">
               <label htmlFor="experience">Years of Experience *</label>
               <div className="input-with-icon">
-                <FaCalendarAlt />
+                <FaCalendarAlt className="input-icon" />
                 <input
                   type="number"
                   id="experience"
@@ -403,7 +403,7 @@ const DoctorRegistration = () => {
             <div className="form-group">
               <label htmlFor="education">Education & Qualifications *</label>
               <div className="input-with-icon">
-                <FaGraduationCap />
+                <FaGraduationCap className="input-icon" />
                 <input
                   type="text"
                   id="education"
@@ -425,7 +425,7 @@ const DoctorRegistration = () => {
             <div className="form-group">
               <label htmlFor="location">Hospital/Clinic Location *</label>
               <div className="input-with-icon">
-                <FaMapMarkerAlt />
+                <FaMapMarkerAlt className="input-icon" />
                 <input
                   type="text"
                   id="location"
@@ -447,7 +447,7 @@ const DoctorRegistration = () => {
             <div className="form-group">
               <label htmlFor="availability">Availability *</label>
               <div className="input-with-icon">
-                <FaCalendarAlt />
+                <FaCalendarAlt className="input-icon" />
                 <input
                   type="text"
                   id="availability"
@@ -469,7 +469,7 @@ const DoctorRegistration = () => {
             <div className="form-group">
               <label htmlFor="phone">Phone Number *</label>
               <div className="input-with-icon">
-                <FaPhone />
+                <FaPhone className="input-icon" />
                 <input
                   type="tel"
                   id="phone"
@@ -492,9 +492,9 @@ const DoctorRegistration = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="consultationFee">Consultation Fee (₹)</label>
+              <label htmlFor="consultationFee">Consultation Fee (BDT)</label>
               <div className="input-with-icon">
-                <FaDollarSign />
+                <FaDollarSign className="input-icon" />
                 <input
                   type="number"
                   id="consultationFee"
@@ -502,7 +502,7 @@ const DoctorRegistration = () => {
                   value={formData.consultationFee}
                   onChange={handleChange}
                   min="0"
-                  placeholder="Fee in rupees"
+                  placeholder="Fee in BDT"
                 />
               </div>
             </div>
@@ -515,7 +515,7 @@ const DoctorRegistration = () => {
               <label>Languages Spoken *</label>
               <div className="array-input-group">
                 <div className="input-with-icon">
-                  <FaLanguage />
+                  <FaLanguage className="input-icon" />
                   <input
                     type="text"
                     value={languageInput}
@@ -568,7 +568,7 @@ const DoctorRegistration = () => {
               <label>Services Offered *</label>
               <div className="array-input-group">
                 <div className="input-with-icon">
-                  <FaStethoscope />
+                  <FaStethoscope className="input-icon" />
                   <input
                     type="text"
                     value={serviceInput}
@@ -602,7 +602,7 @@ const DoctorRegistration = () => {
               <label>Achievements & Certifications</label>
               <div className="array-input-group">
                 <div className="input-with-icon">
-                  <FaGraduationCap />
+                  <FaGraduationCap className="input-icon" />
                   <input
                     type="text"
                     value={achievementInput}
